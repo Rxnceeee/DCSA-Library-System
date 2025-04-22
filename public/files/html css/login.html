@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup & Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: whitesmoke;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .form-container {
+            background: #f75353;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+            width: 350px;
+            text-align: center;
+            color: white;
+            transition: all 0.3s ease-in-out;
+        }
+
+        h2 {
+            color: #ffdddd;
+            margin-bottom: 15px;
+        }
+
+        input {
+            width:90%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ff6666;
+            border-radius: 6px;
+            background: #400202;
+            color: white;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        input:focus {
+            border-color: #ff0000;
+            outline: none;
+            background: #660505;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            background: #530101;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #b8b6b6;
+            color: black;
+        }
+
+        .status {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #ffcccc;
+        }
+
+        .error {
+            color: #ff4d4d;
+        }
+
+        .success {
+            color: #20f120;
+        }
+
+        .switch-text {
+            font-size: 14px;
+            margin-top: 12px;
+        }
+
+        .switch-text button {
+            background: none;
+            border: none;
+            color: #ffdddd;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: underline;
+            transition: 0.3s;
+        }
+
+        .switch-text button:hover {
+            color: white;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: #ffaaaa;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Signup Form -->
+    <div class="form-container" id="signupForm">
+        <h2>Signup</h2>
+        <input type="text" id="signupUsername" placeholder="Enter Username">
+        <input type="password" id="signupPassword" placeholder="Enter Password">
+        <button onclick="signupUser()">Signup</button>
+        
+        <p class="switch-text">Already have an account? <button onclick="showLoginUser()">Login as User</button></p>
+        <hr>
+        <p class="switch-text">Admin? <button onclick="showLoginAdmin()">Login as Admin</button></p>
+
+        <p id="signupStatus" class="status"></p>
+    </div>
+
+    <!-- User Login Form -->
+    <div class="form-container" id="loginUserForm" style="display: none;">
+        <h2>User Login</h2>
+        <input type="text" id="loginUsername" placeholder="Enter Username">
+        <input type="password" id="loginPassword" placeholder="Enter Password">
+        <button onclick="loginUser()">Login</button>
+
+        <p class="switch-text">New here? <button onclick="showSignUp()">Create an Account</button></p>
+        <hr>
+        <p class="switch-text">Admin? <button onclick="showLoginAdmin()">Login as Admin</button></p>
+
+        <p id="loginStatus" class="status"></p>
+    </div>
+
+    <!-- Admin Login Form -->
+    <div class="form-container" id="loginAdminForm" style="display: none;">
+        <h2>Admin Login</h2>
+        <input type="text" id="adminUsername" placeholder="Enter Username">
+        <input type="password" id="adminPassword" placeholder="Enter Password">
+        <button onclick="loginAdmin()">Login</button>
+
+        <p class="switch-text">Not an admin? <button onclick="showLoginUser()">Login as User</button></p>
+        
+        <p id="adminStatus" class="status"></p>
+    </div>
+
+    <script>
+        const url='/login'
+        function hideAllForms() {
+            document.getElementById('signupForm').style.display = 'none';
+            document.getElementById('loginUserForm').style.display = 'none';
+            document.getElementById('loginAdminForm').style.display = 'none';
+        }
+
+        function showSignUp() {
+            hideAllForms();
+            document.getElementById('signupForm').style.display = 'block';
+        }
+
+        function showLoginUser() {
+            hideAllForms();
+            document.getElementById('loginUserForm').style.display = 'block';
+        }
+
+        function showLoginAdmin() {
+            hideAllForms();
+            document.getElementById('loginAdminForm').style.display = 'block';
+        }
+
+        async function signupUser() {
+            const username = document.getElementById('signupUsername').value.trim();
+            const password = document.getElementById('signupPassword').value.trim();
+            const status = document.getElementById('signupStatus');
+
+            if (!username || !password) {
+                status.innerText = "Please fill in all fields!";
+                status.className = "status error";
+                return;
+            }
+
+            status.innerText = "Signing up...";
+            status.className = "status";
+
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await res.json();
+                status.innerText = data.message;
+                status.className = data.success ? "status success" : "status error";
+            } catch (error) {
+                status.innerText = "Server error. Try again.";
+                status.className = "status error";
+            }
+            if(res.status == 200){
+                const username = document.getElementById('signupUsername').value ="";
+                const password = document.getElementById('signupPassword').value ="";
+            }
+        }
+
+        async function loginUser() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            const status = document.getElementById('loginStatus');
+
+            if (!username || !password) {
+                status.innerText = "Please fill in all fields!";
+                status.className = "status error";
+                return;
+            }
+
+            status.innerText = "Logging in...";
+            status.className = "status";
+
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await res.json();
+                status.innerText = data.message;
+                status.className = data.success ? "status success" : "status error";
+            } catch (error) {
+                status.innerText = "Server error. Try again.";
+                status.className = "status error";
+            }
+        }
+    </script>
+
+</body>
+</html>

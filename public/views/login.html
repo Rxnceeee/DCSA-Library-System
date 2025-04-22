@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/imageUploads/OIP-removebg-preview.png" sizes="128x128">
+    <title>DCSA Library Login</title>
+    <style>
+        :root {
+            --maroon-primary: #800000;
+            --maroon-dark: #5a0000;
+            --maroon-light: #a80000;
+            --gold-accent: #d4af37;
+            --cream-bg: #f5f5f0;
+            --text-dark: #333333;
+            --text-light: #f8f8f8;
+            --border-radius-large: 20px;
+            --border-radius-small: 10px;
+        }
+
+        @font-face {
+            font-family: 'f1';
+            src: url(/imageUploads/fonts/Gotham\ Regular.otf);
+        }
+
+        @font-face {
+            font-family: 'f2';
+            src: url(/imageUploads/fonts/March\ Clean.otf);
+        }
+
+        @font-face {
+            font-family: 'f3';
+            src: url(/imageUploads/fonts/SFPRODISPLAYREGULAR.OTF);
+        }
+
+        @font-face {
+            font-family: 'f4';
+            src: url(/imageUploads/fonts/Garet-Book.otf);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'f4', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--maroon-dark);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-image: radial-gradient(circle at 10% 20%, rgba(128,0,0,0.05) 0%, rgba(128,0,0,0.05) 90%);
+        }
+        
+        #message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: var(--border-radius-small);
+            background-color: var(--maroon-primary);
+            color: var(--text-light);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+            z-index: 100;
+            border: 2px solid var(--gold-accent);
+            font-weight: 500;
+            font-family: 'f1';
+        }
+        
+        .login-container {
+            background-color: white;
+            border-radius: var(--border-radius-large);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 480px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid var(--gold-accent);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 0;
+            width: 100%;
+            height: 15px;
+            background: linear-gradient(90deg, 
+                var(--maroon-primary) 0%, 
+                var(--maroon-dark) 30%, 
+                var(--gold-accent) 50%, 
+                var(--maroon-dark) 70%, 
+                var(--maroon-primary) 100%);
+        }
+        
+        .login-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 5px;
+            background-color: var(--gold-accent);
+            border-radius: 0 0 10px 10px;
+        }
+        
+        h1, h2 {
+            color: var(--maroon-primary);
+            margin-bottom: 24px;
+            text-align: center;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        h2 {
+            font-size: 24px;
+            position: relative;
+            padding-bottom: 10px;
+            font-family: 'f1';
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--gold-accent);
+            border-radius: 3px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px 20px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius-small);
+            font-size: 16px;
+            transition: all 0.3s;
+            background-color: rgba(255,255,255,0.9);
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--maroon-primary);
+            box-shadow: 0 0 0 3px rgba(128,0,0,0.1);
+            background-color: white;
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: var(--border-radius-small);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 0.5px;
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        .primary-btn {
+            background-color: var(--maroon-primary);
+            color: white;
+            margin-bottom: 20px;
+            border: 2px solid var(--maroon-dark);
+            box-shadow: 0 4px 0 var(--maroon-dark);
+        }
+        
+        .primary-btn:hover {
+            background-color: var(--maroon-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 var(--maroon-dark);
+        }
+        
+        .secondary-btn {
+            background-color: transparent;
+            color: var(--maroon-primary);
+            border: 2px solid var(--maroon-primary);
+            margin-bottom: 12px;
+        }
+        
+        .secondary-btn:hover {
+            background-color: rgba(128,0,0,0.05);
+            transform: translateY(-2px);
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px dashed var(--maroon-primary);
+            margin: 25px 0;
+            opacity: 0.3;
+        }
+        
+        .form-footer {
+            text-align: center;
+            color: var(--text-dark);
+            font-size: 14px;
+            margin-top: 25px;
+            font-style: italic;
+        }
+        
+        .form-footer a {
+            color: var(--maroon-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            color: var(--maroon-primary);
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 0;
+            letter-spacing: 2px;
+            margin-top: 10px;
+            font-family: 'f2';
+        }
+        
+        .logo-img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 600px) {
+            .login-container {
+                padding: 30px 20px;
+                border-width: 2px;
+                border-top-width: 12px;
+            }
+            
+            h2 {
+                font-size: 22px;
+            }
+            
+            .logo h1 {
+                font-size: 28px;
+            }
+            
+            .logo-img {
+                width: 60px;
+                height: 60px;
+            }
+        }
+        #student {
+    display: none;
+    background-color: white;
+    border-radius: var(--border-radius-large);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 40px 30px;
+    max-width: 600px;
+    width: 100%;
+    border: 3px solid var(--gold-accent);
+    margin: 50px auto;
+    font-family: 'f4';
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+#student h2 {
+    text-align: center;
+    font-size: 28px;
+    color: var(--maroon-primary);
+    margin-bottom: 25px;
+    font-family: 'f2';
+}
+
+#student form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Input and Select Styles */
+#student input,
+#student select {
+    padding: 12px 15px;
+    border: 1.5px solid #ccc;
+    border-radius: var(--border-radius-small);
+    font-size: 15px;
+    transition: border-color 0.3s;
+    font-family: 'f3';
+}
+
+#student input:focus,
+#student select:focus {
+    border-color: var(--maroon-primary);
+    outline: none;
+}
+
+/* Primary and Secondary Buttons */
+.primary-btn,
+.secondary-btn {
+    padding: 12px;
+    border: none;
+    border-radius: var(--border-radius-small);
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    font-family: 'f1';
+}
+
+.primary-btn {
+    background-color: var(--maroon-primary);
+    color: white;
+}
+
+.primary-btn:hover {
+    background-color: var(--maroon-light);
+    transform: scale(1.02);
+}
+
+.secondary-btn {
+    background-color: #eee;
+    color: var(--maroon-primary);
+    border: 1px solid var(--maroon-primary);
+}
+
+.secondary-btn:hover {
+    background-color: var(--gold-accent);
+    color: black;
+}
+
+/* Divider */
+#student hr {
+    margin: 20px 0;
+    border: none;
+    border-top: 1px solid #ddd;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+    </style>
+
+</head>
+<body>
+    <p id="message"></p>
+    
+    <div class="login-container">
+
+        <div class="logo">
+            <img src="/imageUploads/OIP-removebg-preview.png" class="logo-img">
+            <h1>DCSA Library</h1>
+        </div>
+        
+        <div id="loginUserForm" style="display: block;">
+            <h2>Student Login</h2>
+            <input type="text" id="loginUsername" placeholder="Enter Username" required>
+            <input type="password" id="loginPassword" placeholder="Enter Password" required>
+            <button id="studentLoginButton" class="primary-btn">Login</button>
+            <hr>
+            <button onclick="showLoginAdminForm()" class="secondary-btn">Admin Portal</button>
+            <button onclick="showRegisterStudentForm()" class="secondary-btn">New Registration</button>
+            <div class="form-footer">
+                Having trouble? <a href="#">Contact our support team</a>
+            </div>
+        </div>
+
+        <div id="loginAdminForm" style="display: none;">
+            <h2>Admin Login</h2>
+            <input type="text" id="adminUsername" placeholder="Admin Username" required>
+            <input type="password" id="adminPassword" placeholder="Admin Password" required>
+            <button id="adminLoginButton" class="primary-btn">Access Dashboard</button>
+            <hr>
+            <button onclick="showLoginUserForm()" class="secondary-btn">Student Login</button>
+            <button onclick="showRegisterStudentForm()" class="secondary-btn">Register Student</button>
+            <div class="form-footer">
+                Restricted administrative access only
+            </div>
+        </div>
+
+        <div id="student" style="display: none;">
+            <h2>Student Registration</h2>
+            <form id="studentForm">
+                <input type="number" id="registerStudentNumber" maxlength="99999" placeholder="Student Number" required>
+                <input type="text" id="registerFirstName" placeholder="First Name" required>
+                <input type="text" id="registerLastName" placeholder="Last Name" required>
+                <input type="text" id="registerMiddleName" placeholder="Middle Name (optional)">
+                <select id="registerYearGradeLevel" required>
+                    <option value="" disabled selected>Grade/Year Level</option>
+                    <option value="Grade 11">Grade 11</option>
+                    <option value="Grade 12">Grade 12</option>
+                    <option value="1st Yr College">1st Year College</option>
+                    <option value="2nd Yr College">2nd Year College</option>
+                    <option value="3rd Yr College">3rd Year College</option>
+                    <option value="4th Yr College">4th Year College</option>
+                </select>
+                <select id="registerCourseStrand" required>
+                    <option value="" disabled selected>Course/Strand</option>
+                    <option value="ICT">ICT</option>
+                    <option value="HE">HE</option>
+                    <option value="BSIT">BSIT</option>
+                    <option value="BSOA">BSOA</option>
+                    <option value="BSHM">BSHM</option>
+                    <option value="ACT">ACT</option>
+                </select>
+                <input type="number" id="registerPhoneNumber" placeholder="Phone Number" required>
+                <input type="email" id="registerEmailAddress" placeholder="Email Address" required>
+                <input type="text" id="registerUsername" placeholder=" Create Username" required>
+                <input type="password" id="registerPassword" placeholder="Create Password" required>
+                <input type="password" id="registerConfirmPassword" placeholder="Confirm Password" required>
+                <button id="studentRegistrationButton" class="primary-btn">Complete Registration</button>
+                <hr>
+                <button onclick="showLoginAdminForm()" class="secondary-btn">Admin Login</button>
+                <button onclick="showLoginUserForm()" class="secondary-btn">Student Login</button>
+            </form>
+        </div>
+        
+    </div>
+
+    <script>
+        const now = new Date();
+        const currentDateTime = now.toISOString().slice(0, 19).replace("T", " "); 
+        const message = document.getElementById('message')
+
+        document.getElementById('registerStudentNumber').addEventListener('input', function () {
+            if (this.value.length > 5) {
+            this.value = this.value.slice(0, 5);
+        }
+        })
+
+        document.getElementById('registerPhoneNumber').addEventListener('input', function () {
+        if (this.value.length > 11) {
+            this.value = this.value.slice(0, 11);
+        }
+        });
+        
+        document.getElementById('registerUsername').addEventListener('input', function () {
+        if (this.value.length > 18) {
+            this.value = this.value.slice(0, 18);
+        }
+        });
+        
+        function showMessage(text, isError = true) {
+            message.innerText = text;
+            message.style.display = 'block';
+            message.style.backgroundColor = isError ? 'var(--cream-bg)' : 'var(--gold-accent)';
+            message.style.color = isError ? 'var(--maroon-dark)' : 'var(--text-dark)';
+            
+            setTimeout(() => {
+                message.style.display = 'none';
+            }, 3000);
+        }
+        
+        function hideAllForms() {
+            document.getElementById('loginUserForm').style.display = 'none';
+            document.getElementById('loginAdminForm').style.display = 'none';
+            document.getElementById('student').style.display = 'none';
+        }
+        
+        
+        function adminClearFields(){
+            document.getElementById('adminUsername').value = "";
+            document.getElementById('adminPassword').value = "";
+        }
+        
+        function loginClearFields(){
+            document.getElementById('loginUsername').value = "";
+            document.getElementById('loginPassword').value = "";
+        }
+
+        function studentRegisterClearFields() {
+            document.getElementById('registerStudentNumber').value = "";
+            document.getElementById('registerFirstName').value = "";
+            document.getElementById('registerLastName').value = "";
+            document.getElementById('registerMiddleName').value = "";
+            document.getElementById('registerYearGradeLevel').value = "";
+            document.getElementById('registerCourseStrand').value = "";
+            document.getElementById('registerPhoneNumber').value = "";
+            document.getElementById('registerEmailAddress').value = "";
+            document.getElementById('registerUsername').value = "";
+            document.getElementById('registerPassword').value = "";
+            document.getElementById('registerConfirmPassword').value = "";
+        }
+        
+        function clearAllFields(){
+            loginClearFields()
+            studentRegisterClearFields()
+            adminClearFields()
+        }
+
+        function showLoginUserForm() {
+            hideAllForms()
+            clearAllFields()
+            document.getElementById('loginUserForm').style.display = 'block'
+            document.title = 'Login – Student'
+        }
+
+        function showLoginAdminForm() {
+            hideAllForms()
+            clearAllFields()
+            document.getElementById('loginAdminForm').style.display = 'block'
+            document.title = 'Login – Admin'
+        }
+
+        function showRegisterStudentForm() {
+            hideAllForms()
+            clearAllFields()
+            document.getElementById('student').style.display = 'block'
+            document.title = 'Register – Student'
+        }
+
+        async function loginStudent(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            
+            if(!username || !password) {
+                showMessage('Please enter both username and password');
+                return;
+            }
+
+            try {
+                const response = await fetch('/loginStudent', {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json()
+                if(response.status===403) clearAllFields()
+                if (response.status === 200) { 
+                    showMessage(data.message, false)
+                    clearAllFields()
+                    window.localStorage.setItem('username', username)
+                    window.location.href = '/homepage'
+                } else {
+                    showMessage(data.message)
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Login failed. Please try again.')
+            }
+        }
+
+        async function loginAdmin(e){
+            e.preventDefault()
+
+            const username = document.getElementById('adminUsername').value.trim()
+            const password = document.getElementById('adminPassword').value.trim()
+            
+            if(!username || !password) {
+                showMessage('Please enter both username and password');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/loginAdmin',{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({username,password})
+                })
+                
+                const data = await response.json()
+                
+                if(response.status === 200){
+                    showMessage(data.message, false);
+                    clearAllFields();
+                    window.location.href = '/admin';
+                } else {
+                    showMessage(data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Login failed. Please try again.');
+            }
+        }
+        
+        async function registerStudentDetails(e) {
+            e.preventDefault();
+            
+            const studentNumber = document.getElementById('registerStudentNumber').value.trim();
+            const firstName = document.getElementById('registerFirstName').value.trim();
+            const lastName = document.getElementById('registerLastName').value.trim();
+            const middleName = document.getElementById('registerMiddleName').value.trim();
+            const yearGradeLevel = document.getElementById('registerYearGradeLevel').value.trim();
+            const courseStrand = document.getElementById('registerCourseStrand').value.trim();
+            const phoneNumber = document.getElementById('registerPhoneNumber').value.trim();
+            const emailAddress = document.getElementById('registerEmailAddress').value.trim();
+            const username = document.getElementById('registerUsername').value.trim();
+            const password = document.getElementById('registerPassword').value.trim();
+            const confirmPassword = document.getElementById('registerConfirmPassword').value.trim();
+            const dateTimeRegistered = currentDateTime;
+
+            console.log(studentNumber, firstName, lastName, middleName, yearGradeLevel, courseStrand, phoneNumber, emailAddress, username, password, dateTimeRegistered);
+
+            if(!studentNumber || !firstName || !lastName || !yearGradeLevel || !courseStrand || !phoneNumber ||!emailAddress ||!password ||!confirmPassword || !username) return showMessage('Please fill all required fields');
+            if(password != confirmPassword) return showMessage(`Password doesn't Match`);
+            if(password.length < 8) return showMessage(`Password length must be greater or equal to 8 characters`);
+            if(emailAddress.length < 12) return showMessage(`Email address length is not Valid`);
+            if(username.length < 8 || username.length > 18) return showMessage("Username must be between 8 and 18 characters");
+            if(studentNumber.length > 5 ||studentNumber.length < 4) return showMessage(`Student Number length is not valid (Maximum 5 and minimum of 4 digits)`);
+            if(phoneNumber.length != 11 || !phoneNumber.startsWith(0)) return showMessage(`Phone Number length is not valid (it must be 11 digits and start with 0)`);
+            
+            try {
+                const response = await fetch('/registerStudent', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ studentNumber, firstName, lastName, middleName, yearGradeLevel, courseStrand, phoneNumber, emailAddress, username, password, dateTimeRegistered })
+                });
+
+                const data = await response.json();
+                
+                if(response.ok){
+                    clearAllFields();
+                    window.location.href='/registerSuccessful';
+                } else {
+                    showMessage(data.message);
+                }
+            } catch (error) {
+                showMessage('Registration failed. Please try again.');
+            }
+        }
+
+        document.getElementById('studentLoginButton').addEventListener('click', loginStudent);
+        document.getElementById('studentRegistrationButton').addEventListener('click', registerStudentDetails);
+        document.getElementById('adminLoginButton').addEventListener('click', loginAdmin);
+    </script>
+</body>
+</html>

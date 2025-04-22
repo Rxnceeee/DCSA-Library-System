@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/files/icons/OIP-removebg-preview.png" sizes="128x128">
+    <title>About</title>
+    <link rel="stylesheet" href="../style/about.css">
+</head>
+<style>
+
+  </style>
+<body>
+    <nav class="navbar">
+        <div class="icon-text">
+            <div class="square"></div>
+            <a href="/homepage"><span class="text">Library</span></a>
+        </div>
+        <div class="left-side">
+            <a href="/homepage">Home</a>
+            <a href="/about">About</a>
+            <div style="display: none;">
+                <p id="studentNumber"></p>
+                <p id="fullName"></p>
+            </div>
+        </div>
+        <div class="right-side">
+            <a href="/education">For Education</a>
+            <a href="/generalReading">For General Reading</a>
+            <a href="/researchReferences">For Research & References</a>
+            <a href="/fiction">For Fiction</a>
+
+            <a onclick="openImportantNoticeForm()" id="importantNoticeText" style="display: none;">Important Notice</a>
+
+            <div id="importantNoticeForm" class="importantNoticeForm" style="display: none;">
+                <button onclick="closeImportantNoticeForm()" style="position: absolute; top: 10px; right: 120px; color: maroon; border: none; border-radius: 4px; cursor: pointer;">X</button>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Book Title</th>
+                            <th>Date Time Claimed</th>
+                            <th>Return Date</th>
+                            <th>Transaction Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="overdueBooks"></tbody>
+                </table>
+            </div>
+            <span class="icon">
+                <a onclick="openProfileModal()"><img src="files/icons/user.png" alt="User Icon"/></a>
+            </span>
+            <div id="profileModal" class="modal" style="display: none;">
+            </div>
+        </div>
+    </nav>
+
+    <div id="noticeOverlay" class="overlay" onclick="closeNoticeForm()"></div>
+
+    <div id="noticeForm" class="noticeForm"></div>
+    
+    <a href="/homepage">
+        <img class="logo" src="/files/icons/OIP-removebg-preview.png"></a>
+    </div>
+    <script>
+
+let now = new Date();
+    let year = now.getFullYear();
+    let month = String(now.getMonth() + 1).padStart(2, '0');
+    let day = String(now.getDate()).padStart(2, '0');
+    let hours = String(now.getHours()).padStart(2, '0');
+    let minutes = String(now.getMinutes()).padStart(2, '0');
+
+    const currentDateTime = `${year}-${month}-${day} ${hours}:${minutes}`;
+
+    async function setAccount() {
+        const username = localStorage.getItem('username');
+        const profileInfo = document.getElementById('profileModal')
+        const fullName = document.getElementById('fullName')
+        const studentNumber = document.getElementById('studentNumber')
+
+        const response= await fetch('/setAccount',{
+            method:'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:JSON.stringify({username})
+        })
+        const accountInfo = await response.json()
+        profileInfo.innerHTML=accountInfo.map(account=>`
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <h3>Profile</h3>
+                    <ul class="options-list">
+                        <li><a onclick="showPersonalDetails()">Personal Details</a></li>
+                        <li><a onclick="showHistory()">History</a></li>
+                        <li><a onclick="showChangePassword()">Change Password</a></li>
+                        <li><a onclick="logout()">Logout</a></li>
+                    </ul>
+                    <div id="details" class="option-content" style="display:none;">
+                        <p><strong>Account Status:</strong>${account.accountStatus}</p>
+                        <p><strong>Full Name:</strong>${account.fullName}</p>
+                        <p><strong>Student No:</strong> ${account.studentNumber}</p>
+                        <p><strong>Grade/ Yr Level:</strong> ${account.yearGradeLevel}</p>
+                        <p><strong>Coure/ Strand:</strong> ${account.courseStrand}</p> 
+                        <p><strong>Phone Number:</strong> ${account.phoneNumber}</p> 
+                        <p><strong>Email Address:</strong> ${account.emailAddress}</p>
+                    </div>
+                    <div id="history" class="option-content"style="display:none;">
+                        <table id="historyTable">
+                            <tr>
+                                <th>Book Title</th>
+                                <th>Date Booked</th>
+                                <th>Date Claimed</th>
+                                <th>Return Date</th>
+                                <th>Date Returned</th>
+                                <th>Condition</th>
+                                <th>Date Paid</th>
+                                <th>Date Replaced</th>
+                                <th>Date Repaired</th>
+                                <th>Penalty</th>
+                                <th>Status</th>
+                            </tr>
+                            <tbody id="bookHistory"></tbody>
+                        </table>
+                    </div>
+                    <div id="changePassword" class="option-content" style="display: none;">
+                        <input type="password"  id="currentPassword" placeholder="Enter Current Password">
+                        <input type="password"  id="newPassword" placeholder="Enter New Password">
+                        <input type="password"  id="confirmNewPassword" placeholder="Confirm New Password">
+                        <button onclick="changePassword('${username}')">Change Password</button>
+                    </div>
+                </div>`).join('')
+        fullName.innerHTML=accountInfo[0].fullName
+        studentNumber.innerHTML=accountInfo[0].studentNumber
+        fetchHistory()
+        setImportantNotice(accountInfo[0].studentNumber)
+    }
+    
+    async function changePassword(username) {
+        
+        const currentPassword = document.getElementById('currentPassword').value.trim()
+        const newPassword = document.getElementById('newPassword').value.trim()
+        const confirmNewPassword = document.getElementById('confirmNewPassword').value.trim()
+
+        if(!currentPassword || !newPassword || ! confirmNewPassword) return alert('Input Fields are required')
+        if(newPassword !== confirmNewPassword) return alert('Password doesnt match')
+        if(newPassword.length < 8 || confirmNewPassword.length <8) return alert('Password length is invalid')
+
+        const response = await fetch('/changePassword',{
+            method:'PUT',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({currentPassword,newPassword,username})
+        })
+
+        const data = await response.json()
+        if(response.status == 201) {
+            document.getElementById('currentPassword').value=''
+            document.getElementById('newPassword').value=''
+            document.getElementById('confirmNewPassword').value=''
+            window.location.href = '/homepage';
+        }
+        alert(data.message)
+    }
+    
+    function showChangePassword(){
+        hideAllOptions()
+        document.getElementById('changePassword').style.display = 'block';
+    }
+
+    function openProfileModal() {
+      document.getElementById('profileModal').style.display = 'block';
+      hideAllOptions()
+    }
+
+    function closeModal() {
+      document.getElementById('profileModal').style.display = 'none';
+    }
+
+    function hideAllOptions(){
+        document.getElementById('details').style.display = 'none';
+        document.getElementById('history').style.display = 'none';
+        document.getElementById('changePassword').style.display = 'none';
+    }
+   
+    function showPersonalDetails(){
+        hideAllOptions()
+        document.getElementById('details').style.display = 'block';
+    }
+    
+    function showHistory(){
+        fetchHistory()
+        hideAllOptions()
+        document.getElementById('history').style.display = 'block';
+    }
+
+    window.onclick = function(e) {
+      const modal = document.getElementById('profileModal');
+      if (e.target == modal) {
+        closeModal();
+      }
+    }
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = "/";
+        closeModal();
+    }
+    
+    async function fetchHistory() {
+        const studentNumber = document.getElementById('studentNumber').innerHTML;
+        const bookHistoryTable = document.getElementById('bookHistory');
+
+        const response = await fetch('/studentBookHistory', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ studentNumber })
+        });
+
+        const bookHistory = await response.json();
+        
+
+        if (bookHistory.length > 0) {
+            bookHistoryTable.innerHTML = bookHistory.map(history => `
+                <tr>
+                    <td>${history.bookTitle}</td>
+                    <td>${history.dateTimeBooked ? new Date(history.dateTimeBooked).toLocaleString() : 'N/A'}</td>
+                    <td>${history.dateTimeClaimed ? new Date(history.dateTimeClaimed).toLocaleString() : 'N/A'}</td>
+                    <td>${history.dateToBeReturn ? new Date(history.dateToBeReturn).toLocaleDateString(): 'N/A'}</td>
+                    <td>${history.dateTimeReturned ? new Date(history.dateTimeReturned).toLocaleString() : 'N/A'}</td>
+                    <td>${history.returnCondition || 'N/A'}</td>
+                    <td>${history.datePaid ? new Date(history.datePaid).toLocaleString() : 'N/A'}</td>
+                    <td>${history.dateReplaced ? new Date(history.dateReplaced).toLocaleString() : 'N/A'}</td>
+                    <td>${history.dateRepaired ? new Date(history.dateRepaired).toLocaleString() : 'N/A'}</td>
+                    <td>${history.returnPenalty|| 'N/A'}</td>
+                    <td>${history.transactionStatus}</td>
+                </tr>`).join('');
+        } else {
+            bookHistoryTable.innerHTML =`
+            <tr>
+                <td colspan="11" style="text-align: center;"><h2>No History</h2></td>
+            </tr>`
+        }
+    }
+
+    async function setImportantNotice(studentNumber) {
+        
+        const overdueBookTable = document.getElementById('overdueBooks')
+        const importantNoticeText = document.getElementById('importantNoticeText')
+        const noticeForm = document.getElementById('noticeForm')
+
+        const response = await fetch('/importantNotice',{
+            method:'POST',
+            headers:{'Content-Type':'Application/JSON'},
+            body:JSON.stringify({studentNumber})
+        })
+        const books = await response.json()
+        if(books.length>0) {
+            noticeForm.style.display = 'flex';
+            noticeForm.innerHTML=books.map(book=>`
+                <div class="popup-content">
+                    <h1>Overdue Book Needs to be Returned</h1>
+                    <p>${book.bookTitle} Needs to be Returned.</p>
+                    <p>Note that the return date was ${new Date(book.dateToBeReturn).toLocaleDateString()}</p>
+                    <p>Thank you, see you later!</p>
+                    <button onclick="closeNoticeForm()">Close</button>
+                </div>`).join('')
+            
+            overdueBookTable.innerHTML=books.map(book=>`
+                            <tr>
+                                <td>${book.bookTitle}</td>
+                                <td>${new Date(book.dateTimeClaimed).toLocaleString()}</td>
+                                <td>${new Date(book.dateToBeReturn).toLocaleDateString()}</td>
+                                <td>${book.transactionStatus}</td>
+                            </tr>
+            `).join('')
+            importantNoticeText.style.color='red'
+            document.body.appendChild(noticeForm)
+        }else{
+            importantNoticeText.style.display='none'
+        }
+    }
+    
+    function openImportantNoticeForm(){
+        document.getElementById('importantNoticeForm').style.display='block'
+    }
+    
+    function closeImportantNoticeForm(){
+        document.getElementById('importantNoticeForm').style.display='none'
+    }
+    
+    function closeNoticeForm() {
+        document.getElementById('noticeOverlay').style.display = 'none';
+        document.getElementById('noticeForm').style.display = 'none';
+    }
+
+    
+
+    
+    
+  
+    window.addEventListener('DOMContentLoaded', setAccount)
+</script>
+</body>
+</html>

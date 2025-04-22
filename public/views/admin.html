@@ -1,0 +1,3190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/imageUploads/OIP-removebg-preview.png" sizes="128x128">
+    <title>Admin Dashboard</title>
+    <style>
+        :root {
+            --maroon: #800000;
+            --maroon-dark: #5a0000;
+            --maroon-light: #a80000;
+            --maroon-pale: #f5e8e8;
+            --gold: #d4af37;
+            --gold-light: #f1e5c0;
+            --white: #fff;
+            --light-gray: #f8f9fa;
+            --dark-gray: #333;
+            --page-color: whitesmoke;
+            --page-edge: #e8d9b5;
+            --black: #800000;
+        }
+
+        @font-face {
+            font-family: 'f1';
+            src: url(/imageUploads/fonts/Gotham\ Regular.otf);
+        }
+
+        @font-face {
+            font-family: 'f2';
+            src: url(/imageUploads/fonts/March\ Clean.otf);
+        }
+
+        @font-face {
+            font-family: 'f3';
+            src: url(/imageUploads/fonts/SFPRODISPLAYREGULAR.OTF);
+        }
+
+        @font-face {
+            font-family: 'f4';
+            src: url(/imageUploads/fonts/Garet-Book.otf);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'f4', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--page-color);
+            color: var(--dark-gray);
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: linear-gradient(to bottom, var(--maroon-dark), var(--maroon));
+            z-index: 10;
+        }
+
+        body::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: linear-gradient(to top, var(--maroon-dark), var(--maroon));
+            z-index: 10;
+        }
+
+        .header {
+            background-color: var(--maroon);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 5;
+            border-bottom: 4px solid var(--gold);
+        }
+
+        .header::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 20px;
+            right: 20px;
+            height: 6px;
+            background: var(--gold-light);
+            border-radius: 0 0 3px 3px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo img {
+            height: 45px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            font-family: 'f2', serif;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .main-content h2 {
+            font-family: 'f2', serif;
+            color: var(--maroon-dark);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .main-content h2::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: var(--gold);
+            border-radius: 3px;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .menu-toggle:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .container {
+            display: flex;
+            min-height: calc(100vh - 76px);
+            position: relative;
+        }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 20px;
+            background: linear-gradient(to right, 
+                rgba(0,0,0,0.1), 
+                rgba(0,0,0,0.05), 
+                transparent);
+            z-index: 1;
+        }
+
+        .container::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 20px;
+            background: linear-gradient(to left, 
+                rgba(0,0,0,0.1), 
+                rgba(0,0,0,0.05), 
+                transparent);
+            z-index: 1;
+        }
+
+        .sidebar {
+            width: 280px;
+            background-color: var(--white);
+            padding: 1.5rem 1rem;
+            transition: all 0.3s;
+            position: relative;
+            z-index: 2;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            border-right: 1px solid var(--page-edge);
+        }
+
+        .sidebar::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 15px;
+            background: linear-gradient(to left, rgba(0,0,0,0.05), transparent);
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.85rem 1rem;
+            margin-bottom: 0.6rem;
+            background-color: transparent;
+            border: none;
+            color: var(--maroon-dark);
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            text-align: left;
+            transition: all 0.3s;
+            position: relative;
+            font-size: 0.95rem;
+        }
+
+        .nav-btn::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--gold);
+            transform: scaleY(0);
+            transform-origin: center top;
+            transition: transform 0.3s;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background-color: var(--maroon-pale);
+            color: var(--maroon-dark);
+        }
+
+        .nav-btn:hover::before, .nav-btn.active::before {
+            transform: scaleY(1);
+        }
+
+        .nav-btn i {
+            margin-right: 12px;
+            font-size: 1.1rem;
+            color: var(--maroon);
+            min-width: 20px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2.5rem 3rem;
+            background: var(--page-color);
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .main-content::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="10" y="50" font-family="Arial" font-size="10" fill="rgba(128,0,0,0.03)">Library</text></svg>');
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card::after {
+            content: "";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 4px;
+            background: rgba(128, 0, 0, 0.1);
+            border-radius: 2px;
+        }
+
+        .card h3 {
+            color: var(--maroon);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 0.5rem;
+            font-family: 'f4', serif;
+        }
+
+        .card h3::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 2px;
+            background: var(--gold);
+            opacity: 0.7;
+        }
+
+        .card p {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--maroon-dark);
+            margin: 0.5rem 0;
+            font-family: 'f4', serif;
+        }
+
+        .card .card-icon {
+            font-size: 2rem;
+            color: var(--maroon);
+            margin-bottom: 0.5rem;
+            opacity: 0.8;
+        }
+
+        #accountRequest {
+            width: 100%;
+        }
+
+        #accountRequest tr td:last-child {
+            white-space: nowrap;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1.5rem;
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        .data-table th, .data-table td {
+            padding: 1rem 1.2rem;
+            text-align: left;
+            border-bottom: 1px solid var(--maroon-pale);
+        }
+
+        .data-table th {
+            background-color: var(--maroon);
+            color: white;
+            font-weight: 600;
+            font-family: 'f4', serif;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover {
+            background-color: var(--maroon-pale);
+        }
+
+        .action-btn {
+            padding: 0.5rem 0.8rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .edit-btn {
+            background-color: var(--gold);
+            color: var(--dark-gray);
+        }
+
+        .approve-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .forgotPassword-btn {
+            background-color: var(--gold);
+            color: white;
+        }
+
+        .reject-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .form-container {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 2.5rem;
+            position: relative;
+            z-index: 1;
+            border: 1px solid var(--page-edge);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.7rem;
+            font-weight: 600;
+            color: var(--maroon);
+            font-family: 'f4', serif;
+            font-size: 1.1rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.9rem;
+            border: 1px solid var(--page-edge);
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background-color: var(--maroon-pale);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--maroon);
+            box-shadow: 0 0 0 3px rgba(128, 0, 0, 0.1);
+        }
+
+        .submit-btn {
+            background-color: var(--maroon);
+            color: white;
+            border: none;
+            padding: 0.9rem 1.8rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s;
+            font-family: 'f4', serif;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.5s;
+        }
+
+        .submit-btn:hover::after {
+            left: 100%;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--maroon-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(3px);
+        }
+
+        .modal-content {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+            border-top: 5px solid var(--maroon);
+            animation: modalFadeIn 0.3s;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.8rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--maroon-pale);
+        }
+
+        .modal-header h2 {
+            color: var(--maroon);
+            font-family: 'f4', serif;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--maroon);
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            transform: rotate(90deg);
+            color: var(--maroon-dark);
+        }
+
+        .main-content > div[id] {
+            position: relative;
+        }
+
+
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 240px;
+                padding: 1rem 0.8rem;
+            }
+            
+            .main-content {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 0.5rem;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                justify-content: center;
+            }
+            
+            .nav-btn {
+                width: auto;
+                padding: 0.6rem 1rem;
+                margin-bottom: 0;
+                font-size: 0.9rem;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .main-content > div[id]::before {
+                left: 50%;
+                transform: translateX(-50%);
+                top: -13px;
+                font-size: 0.8rem;
+                padding: 0.2rem 1rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.8rem;
+                padding: 1rem;
+            }
+            
+            .logo {
+                justify-content: center;
+            }
+            
+            .menu-toggle {
+                display: block;
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+            }
+            
+            .sidebar {
+                display: none;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem;
+            }
+            
+            .sidebar.show {
+                display: flex;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .data-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .main-content {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-content {
+                padding: 1.2rem;
+            }
+            
+            .form-container {
+                padding: 1.2rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /*UPDATE BOOK STOCKS --START*/
+.updateBookStocks {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--light-gray);
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    width: 90%;
+    max-width: 400px;
+    display: none;
+}
+
+.updateBookStocks .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.updateBookStocks .close-btn:hover {
+    color: #333;
+}
+
+.updateBookStocks p {
+    margin: 10px 0;
+    font-weight: bold;
+    color: #333;
+}
+
+#bookStocksUS {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.updateBookStocks button:not(.close-btn) {
+    margin-top: 15px;
+    width: 100%;
+    padding: 10px;
+    background-color: var(--black);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.updateBookStocks button:not(.close-btn):hover {
+    background-color: var(--maroon-light);
+}
+
+/*UPDATE BOOK STOCKS --END*/
+
+/*forgot password --start*/
+.forgotPasswordOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    display: none;
+}
+
+.forgotPassword {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    z-index: 1001;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    width: 350px;
+    max-width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.forgotPassword h2 {
+    margin-top: 0;
+    text-align: center;
+}
+
+.forgotPassword input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.submit-btn {
+    padding: 10px;
+    background-color: var(--maroon, #800000);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.submit-btn:hover {
+    background-color: #a00000;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #aaa;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: #000;
+}
+/*forgot password --end*/
+
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <img src="/imageUploads/OIP-removebg-preview.png" alt="DCSA Logo">
+            <h1>Admin Dashboard</h1>
+        </div>
+        <button class="menu-toggle" id="menuToggle">☰</button>
+    </header>
+
+    <div id="updateBookStocks" class="updateBookStocks" style="display: none;">
+        <button class="close-btn" onclick="closeUpdateBookStocks()">×</button>
+        <p id="bookTitleUS" style="text-align: center;"></p>
+        <p id="bookIDUS" style="display: none;"></p>
+        <input type="number" id="bookStocksUS">
+        <button onclick="updateBookStocks()">Update Stocks</button>
+    </div>
+
+    <div class="forgotPasswordOverlay" onclick="closeForgotPasswordForm()"></div>
+
+    <div id="forgotPassword" class="forgotPassword" style="display: none;">
+        <h2>Forgot Password</h2>
+        <button class="close-btn" onclick="closeForgotPasswordForm()">×</button>
+        <input type="text" id="accountUsername" placeholder="Username" readonly>
+        <input type="password" id="newPassword" placeholder="Enter new password">
+        <input type="password" id="confirmNewPassword" placeholder="Confirm new password">
+        <button class="submit-btn" onclick="changePassword()">Change Password</button>
+    </div>
+
+    <div class="container">
+        <nav class="sidebar" id="sidebar">
+            <button class="nav-btn" onclick="showMainForm()">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </button>
+            <button class="nav-btn" onclick="showStudentForm()">
+                <i class="fas fa-users"></i> Students
+            </button>
+            <button class="nav-btn" onclick="showSearchStudentForm()"> 
+                <i class="fas fa-user"></i> Search Student
+            </button>
+            <button class="nav-btn" onclick="showSearchBookForm()"> 
+                <i class="fas fa-search"></i> Search Book
+            </button>
+            <button class="nav-btn" onclick="showAccountForm()">
+                <i class="fas fa-user-cog"></i> Accounts
+            </button>
+            <button class="nav-btn" onclick="showBookForm()">
+                <i class="fas fa-book"></i> Books
+            </button>
+            <button class="nav-btn" onclick="showBorrowForm()">
+                <i class="fas fa-hand-holding"></i> Borrow
+            </button>
+            <button class="nav-btn" onclick="showReturnForm()">
+                <i class="fas fa-undo"></i> Returns
+            </button>
+            <button class="nav-btn" onclick="showDamageForm()">
+                <i class="fas fa-tools"></i> Damage
+            </button>
+            <button class="nav-btn" onclick="showLostForm()">
+                <i class="fas fa-question-circle"></i> Lost
+            </button>
+            <button class="nav-btn" onclick="showOverdueForm()">
+                <i class="fas fa-clock"></i> Overdues
+            </button>
+            <button class="nav-btn" onclick="showPenaltyForm()">
+                <i class="fas fa-exclamation-circle"></i> Penalty
+            </button>
+            <button class="nav-btn" onclick="showToBuyForm()">
+                <i class="fas fa-cart-plus"></i> To Buy
+            </button>
+            <button class="nav-btn" onclick="showToRepairForm()">
+                <i class="fas fa-tools"></i> To Repair
+            </button>
+            <button class="nav-btn" onclick="showHistoryForm()">
+                <i class="fas fa-history"></i> History
+            </button>
+            <button class="nav-btn">
+                <i class="fas fa-sign-out-alt"></i> <a href="/" style="text-decoration:none;color:inherit;">Logout</a>
+            </button>
+        </nav>
+        
+        <main class="main-content">
+            <div id="main" style="display: block;">
+                <h2>Library Overview</h2>
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <div class="card-corner"></div>
+                        <i class="fas fa-user-check card-icon"></i>
+                        <h3>Verified Students</h3>
+                        <p id="totalVerifiedStudentsMain">0</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-corner"></div>
+                        <i class="fas fa-user-clock card-icon"></i>
+                        <h3>Account Requests</h3>
+                        <p id="totalAccountRequestMain">0</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-corner"></div>
+                        <i class="fas fa-hand-holding card-icon"></i>
+                        <h3>Borrow Request</h3>
+                        <p id="totalBorrowRequestMain">0</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-corner"></div>
+                        <i class="fas fa-book-open-reader card-icon"></i>
+                        <h3>Borrowed Books</h3>
+                        <p id="totalBorrowedBooksMain">0</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-corner"></div>
+                        <i class="fas fa-bookmark card-icon"></i>
+                        <h3>Returned Books</h3>
+                        <p id="totalReturnedBooksMain">0</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-corner"></div>
+                        <i class="fas fa-exclamation-triangle card-icon"></i> 
+                        <h3>Damaged Books</h3>
+                        <p id="totalDamagedBooksMain">0</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-corner"></div>
+                        <i class="fas fa-question-circle card-icon"></i> 
+                        <h3>Lost Books</h3>
+                        <p id="totalLostBooksMain">0</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-corner"></div>
+                        <i class="fas fa-hourglass-end card-icon"></i>
+                        <h3>Overdue Books</h3>
+                        <p id="totalOverdueBooksMain">0</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-corner"></div>
+                        <i class="fas fa-money-bill-wave card-icon"></i>
+                        <h3>Penalty Books</h3>
+                        <p id="totalPendingPenaltyBooksMain">0</p>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-corner"></div>
+                        <i class="fas fa-cart-plus card-icon"></i>
+                        <h3>To Buy Book</h3>
+                        <p id="totalToBuyBooksMain">0</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-corner"></div>
+                        <i class="fas fa-cart-plus card-icon"></i>
+                        <h3>To Repair Book</h3>
+                        <p id="totalToRepairBooksMain">0</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-corner"></div>
+                        <i class="fas fa-layer-group card-icon"></i>
+                        <h3>Unique Books</h3>
+                        <p id="totalBooksMain">0</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-corner"></div>
+                        <i class="fas fa-warehouse card-icon"></i>
+                        <h3>Remaining Book Stocks</h3>
+                        <p id="remainingBookStocksMain">0</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-corner"></div>
+                        <i class="fas fa-cubes card-icon"></i>
+                        <h3>All Book Stocks</h3>
+                        <p id="allBooksMain">0</p>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div id="student" style="display: none;">
+                <h2>Student Management</h2>
+                <div class="form-container">
+                    <form id="studentForm">
+                        <div class="form-group">
+                            <label for="studentNumber">Student Number</label>
+                            <input type="number" id="studentNumber" class="form-control" placeholder="Student Number" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" class="form-control" placeholder="Last Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" class="form-control" placeholder="First Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="middleName">Middle Name</label>
+                            <input type="text" id="middleName" class="form-control" placeholder="Middle Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="gradeYearLevel">Grade/Year Level</label>
+                            <select id="gradeYearLevel" class="form-control" required>
+                                <option value="" disabled selected>Select Grade/Year</option>
+                                <option value="Grade 11">Grade 11</option>
+                                <option value="Grade 12">Grade 12</option>
+                                <option value="1st Yr College">1st Year College</option>
+                                <option value="2nd Yr College">2nd Year College</option>
+                                <option value="3rd Yr College">3rd Year College</option>
+                                <option value="4th Yr College">4th Year College</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="courseStrand">Course/Strand</label>
+                            <select id="courseStrand" class="form-control" required>
+                                <option value="" disabled selected>Select Course/Strand</option>
+                                <option value="ICT">ICT</option>
+                                <option value="HE">HE</option>
+                                <option value="BSIT">BSIT</option>
+                                <option value="BSOA">BSOA</option>
+                                <option value="BSHM">BSHM</option>
+                                <option value="ACT">ACT</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="phoneNumber">Phone Number</label>
+                            <input type="number" id="phoneNumber" class="form-control" placeholder="Phone Number" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="emailAddress">Email Address</label>
+                            <input type="email" id="emailAddress" class="form-control" placeholder="Email Address" required>
+                        </div>
+                        <input type="hidden" id="studentID">
+                        <button type="button" id="studentButton" class="submit-btn" disabled>Update Student</button>
+                        <button type="reset" class="submit-btn">Clear</button>
+                    </form>
+                </div>
+                
+                <h3>Student Records</h3>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Full Name</th>
+                                <th>Student Number</th>
+                                <th>Course/Strand</th>
+                                <th>Grade/Yr Level</th>
+                                <th>Phone Number</th>
+                                <th>Email Address</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentData">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="account" style="display: none;">
+                <div class="searchStudentReturn">
+                    <div style="text-align: center;" class="form-group">
+                        <h2>Search Student</h2>
+                        <input type="number" name="" id="searchStudentNumberAccount" placeholder="Search Student Number">
+                        <button onclick="searchAccountByStudentNumber()">Search</button>
+                        <button onclick="clearSearchAccountByStudentNumber()">Clear</button>
+                    </div>
+                </div>
+                <h2>Account Requests</h2>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student Number</th>
+                                <th>Username</th>
+                                <th>Date Registered</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="accountRequest">
+                        </tbody>
+                    </table>
+                </div>
+                <br>
+
+                <h2>Verified Accounts</h2>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student Number</th>
+                                <th>Username</th>
+                                <th>Date Registered</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="verifiedStudentAccounts">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="book" style="display: none;">
+                <h2>Book Management</h2>
+                <div class="form-container">
+                    <form id="bookForm">
+                        <div class="form-group">
+                            <label for="bookNumberReg">Book Number/ISBN</label>
+                            <input type="text" id="bookNumberReg" class="form-control" placeholder="Book Number/ISBN" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookAuthorReg">Author</label>
+                            <input type="text" id="bookAuthorReg" class="form-control" placeholder="Book Author" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookTitleReg">Title</label>
+                            <input type="text" id="bookTitleReg" class="form-control" placeholder="Book Title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookCategoryReg">Category</label>
+                            <select id="bookCategoryReg" class="form-control" required>
+                                <option value="" disabled selected>Select Category</option>
+                                <option value="Educational Book">Educational Book</option>
+                                <option value="General Reading">General Reading</option>
+                                <option value="Research References">Research/References</option>
+                                <option value="Fiction">Fiction</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookDescriptionReg">Description</label>
+                            <textarea id="bookDescriptionReg" class="form-control" placeholder="Book Description" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="frontCoverReg">Cover Image</label>
+                            <input type="file" id="frontCoverReg" name="frontCover" accept="image/*" class="form-control-file">
+                        </div>
+                       
+                        <div class="form-group">
+                            <label for="bookStocksReg">Stocks</label>
+                            <input type="number" id="bookStocksReg" class="form-control" placeholder="Number of Copies" required>
+                        </div>
+                        <input type="hidden" id="bookID">
+                        <button onclick="registerBookDetails(event)" id="bookButton" class="submit-btn">Submit</button>
+                        <button type="reset" class="submit-btn" style="background-color: #6c757d; margin-left: 10px;">Clear</button>
+                    </form>
+                </div>
+                
+                <h3>Book Inventory</h3>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Cover</th>
+                                <th>Number</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Stocks</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="booksData">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="borrow" style="display: none;">
+                <div class="searchStudentBorrow">
+                    <div style="text-align: center;" class="form-group">
+                        <h2>Search Student</h2>
+                        <input type="number" name="" id="searchStudentNumberBorrow" placeholder="Search Student Number">
+                        <button onclick="searchBorrowRequestByStudentNumber()">Search</button>
+                        <button onclick="clearSearchBorrowRequestByStudentNumber()">Clear</button>
+                    </div>
+                </div>
+                <h2>Borrow Requests</h2>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Request By</th>
+                                <th>Student Number</th>
+                                <th>Book Title</th>
+                                <th>Book Number</th>
+                                <th>Date Booked</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="borrowRequest">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="return" style="display: none;">
+                <div class="searchStudentReturn">
+                    <div style="text-align: center;" class="form-group">
+                        <h2>Search Student</h2>
+                        <input type="number" name="" id="searchStudentNumberReturn" placeholder="Search Student Number">
+                        <button onclick="searchBorrowedBooksByStudentNumber()">Search</button>
+                        <button onclick="clearSearchBorrowedBooksByStudentNumber()">Clear</button>
+                    </div>
+                </div>
+                <h2>Return Book</h2>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Return By</th>
+                                <th>Student Number</th>
+                                <th>Book Title</th>
+                                <th>Book Number</th>
+                                <th>Date Claimed</th>
+                                <th>Return Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="returnRequest">
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="history" style="display: none;">
+                <h2>Transaction History</h2>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Student Number</th>
+                                <th>Book Title</th>
+                                <th>Book Number</th>
+                                <th>Date Claimed</th>
+                                <th>Condition</th>
+                                <th>Date Reported</th>
+                                <th>Date Paid</th>
+                                <th>Date Replaced</th>
+                                <th>Date Repaired</th>
+                                <th>Date Resolved</th>
+                                <th>Penalty</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionHistory">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="overdue" style="display: none;">
+
+                
+                <div style="overflow-x: auto;">
+                    <div class="searchStudentReturn">
+                        <div style="text-align: center;" class="form-group">
+                            <h2>Search Student</h2>
+                            <input type="number" name="" id="searchStudentNumberOverdue" placeholder="Search Student Number">
+                            <button onclick="searchOverdueBooksByStudentNumber()">Search</button>
+                            <button onclick="clearSearchOverdueBooksByStudentNumber()">Clear</button>
+                        </div>
+                    </div>
+                    <h2>Overdue Books</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Student Number</th>
+                                <th>Book Title</th>
+                                <th>Book Number</th>
+                                <th>Date Claimed</th>
+                                <th>Return Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="overdueBooks">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="pendingPenalty" style="display: none;">
+                <div class="searchStudentReturn">
+                    <div style="text-align: center;" class="form-group">
+                        <h2>Search Student</h2>
+                        <input type="number" name="" id="searchStudentNumberPenalty" placeholder="Search Student Number">
+                        <button onclick="searchPenaltyBooksByStudentNumber()">Search</button>
+                        <button onclick="clearSearchPenaltyBooksByStudentNumber()">Clear</button>
+                    </div>
+                </div>
+                <h2>Penalty Books</h2>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Student Number</th>
+                                <th>Book Title</th>
+                                <th>Book Number</th>
+                                <th>Date Reported</th>
+                                <th>Condition</th>
+                                <th>Penalty</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pendingPenaltyBooks">
+                           
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="toBuy" style="display: none;">
+                <h2>To Buy Books</h2>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Book Number</th>
+                                <th>Book Title</th>
+                                <th>Book Author</th>
+                                <th>Quantity</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="toBuyBooks">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="toRepair" style="display: none;">
+                <h2>To Repair Books</h2>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Book Number</th>
+                                <th>Book Title</th>
+                                <th>Book Author</th>
+                                <th>Quantity</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="toRepairBooks">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="searchStudent" style="display: none;">
+                <div style="overflow-x: auto; display: block;">
+                    <div class="form-group" style="text-align: center;">
+                        <h2>Search Student</h2>
+                        <input type="number" name="" id="searchStudentNumber" placeholder="Search Student Number">
+                        <button onclick="searchStudentByStudentNumber()">Search</button>
+                        <button onclick="clearStudentSearchResult()">Clear</button>
+                    </div>
+                    <div id="searchStudentByStudentNumberContainer" class="main-container" style="display: none;">
+                        <h2>Borrower Details</h2>
+                        <div id="studentPersonalDetails">
+                        </div>
+
+                        <div>
+                            <h2>Student Book Transactions</h2>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Book Title</th>
+                                        <th>Book Number</th>
+                                        <th>Date Claimed</th>
+                                        <th>Return Date</th>
+                                        <th>Date Returned</th>
+                                        <th>Condition</th>
+                                        <th>Date Reported</th>
+                                        <th>Date Paid</th>
+                                        <th>Date Replaced</th>
+                                        <th>Date Repaired</th>
+                                        <th>Date Resolved</th>
+                                        <th>Penalty</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentBookTransactionHistory">
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="searchBook" style="display: none;">
+                
+                <div style="overflow-x: auto;">
+                    <div class="form-group" style="text-align: center;">
+                        <h2>Search Book</h2>
+                        <input type="text" name="" id="searchBookNumber" placeholder="Search Book Number">
+                        <button onclick="searchBookByBookNumber()">Search</button>
+                        <button onclick="clearBookSearchResult()">Clear</button>
+
+                    </div>
+                    <div id="searchBookByBookNumberContainer" class="main-container" style="display: none;">
+                        <h2>Book Details</h2>
+                        <div id="bookDetails">
+                           
+                        </div>
+
+                        <div>
+                            <h2>Book Transactions</h2>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Borrowed By</th>
+                                        <th>Student Number</th>
+                                        <th>Date Claimed</th>
+                                        <th>Return Date</th>
+                                        <th>Date Returned</th>
+                                        <th>Condition</th>
+                                        <th>Date Reported</th>
+                                        <th>Date Paid</th>
+                                        <th>Date Replaced</th>
+                                        <th>Date Repaired</th>
+                                        <th>Date Resolved</th>
+                                        <th>Penalty</th>
+                                        <th>Status</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody id="bookTransactions">
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="damage" style="display: none;">
+                <div class="form-group" style="text-align: center;">
+                    <h2>Search Student</h2>
+                    <input type="number" name="" id="searchStudentNumberDamage" placeholder="Search Student Number">
+                    <button onclick="searchDamageBooksByStudentNumber()">Search</button>
+                    <button onclick="clearSearchDamageBooksByStudentNumber()">Clear</button>
+                </div>
+                <h2>Damage Books</h2>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Damaged By</th>
+                                <th>Student Number</th>
+                                <th>Book Title By</th>
+                                <th>Book Number</th>
+                                <th>Condition</th>
+                                <th>Date Reported</th>
+                                <th>Date Paid</th>
+                                <th>Date Replaced</th>
+                                <th>Date Repaired</th>
+                                <th>Date Resolved</th>
+                                <th>Penalty</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="damagedBooks">
+                            
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
+            
+            <div id="lost" style="display: none;">
+                <div class="form-group" style="text-align: center;">
+                    <h2>Search Student</h2>
+                    <input type="number" name="" id="searchStudentNumberLost" placeholder="Search Student Number">
+                    <button onclick="searchLostBooksByStudentNumber()">Search</button>
+                    <button onclick="clearSearchLostBooksByStudentNumber()">Clear</button>
+                </div>
+                <h2> Lost Books</h2>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <tr>
+                                    <th>Lost By</th>
+                                    <th>Student Number</th>
+                                    <th>Book Title</th>
+                                    <th>Book Number</th>
+                                    <th>Date Reported</th>
+                                    <th>Date Paid</th>
+                                    <th>Date Replaced</th>
+                                    <th>Date Resolved</th>
+                                    <th>Penalty</th>
+                                    <th>Status</th>
+                                </tr>
+                            </tr>
+                        </thead>
+                        <tbody id="lostBooks"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <h1 id="message" style="margin-top: 1.5rem; color: var(--maroon); font-family: 'f4', serif;"></h1>
+        </main>
+    </div>
+
+    <div id="returnBookModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Return Book</h2>
+                <button class="close-btn" onclick="closeReturnModal()">&times;</button>
+            </div>
+            <input type="hidden" id="transactionID">
+            <input type="hidden" id="bookNumber">
+            <div class="form-group">
+                <select id="returnCondition" required>
+                    <option value="" disabled selected>Condition</option>
+                    <option value="GOOD">Good</option>
+                    <option value="LOST">Lost</option>
+                    <option value="SEVERE DAMAGE">Severe Damage</option>
+                    <option value="MILD DAMAGE">Mild Damage</option>
+                    <option value="MINIMAL DAMAGE">Minimal Damage</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <select id="returnPenalty" required>
+                    <option value="" disabled selected>Penalty</option>
+                    
+                </select>
+            </div>
+            <div class="form-group">
+                <select id="transactionStatus" required>
+                    <option value="" disabled selected>Status</option>
+                    
+                </select>
+            </div>
+            <button onclick="submitBook()" class="submit-btn">Confirm</button>
+        </div>
+    </div>
+
+    <script>
+        const message = document.getElementById('message')
+
+        let now = new Date()
+        let year = now.getFullYear()
+        let month = String(now.getMonth() + 1).padStart(2, '0')
+        let day = String(now.getDate()).padStart(2, '0')
+        let hours = String(now.getHours()).padStart(2, '0')
+        let minutes = String(now.getMinutes()).padStart(2, '0')
+
+        let futureDate = new Date()
+        futureDate.setDate(now.getDate() + 3)
+
+        let futureYear = futureDate.getFullYear()
+        let futureMonth = String(futureDate.getMonth() + 1).padStart(2, '0')
+        let futureDay = String(futureDate.getDate()).padStart(2, '0')
+
+        const currentDatePlus3Days = `${futureYear}-${futureMonth}-${futureDay}`
+        const currentDateTime = `${year}-${month}-${day} ${hours}:${minutes}`
+        const currentDate = `${year}-${month}-${day}`
+
+        document.getElementById('returnCondition').addEventListener('change', async (e) => {
+            e.preventDefault()
+            const returnPenaltyDropdown = document.getElementById('returnPenalty');
+            const transactionStatusDropdown = document.getElementById('transactionStatus');
+            const returnCondition = document.getElementById('returnCondition');
+
+            returnPenaltyDropdown.innerHTML = `<option value="" disabled selected>Penalty</option>`;
+            transactionStatusDropdown.innerHTML = `<option value="" disabled selected>Status</option>`;
+
+            if (returnCondition.value === 'GOOD') {
+                returnPenaltyDropdown.innerHTML += `<option value="NONE">None</option>`;
+                transactionStatusDropdown.innerHTML += `<option value="RETURNED">Return</option>`;
+            } else if (returnCondition.value === 'MINIMAL DAMAGE') {
+                returnPenaltyDropdown.innerHTML += `<option value="LIBRARY SERVICE">Library Service</option>`;
+                transactionStatusDropdown.innerHTML += `<option value="RETURNED">Return</option>`;
+            } else if (returnCondition.value === 'MILD DAMAGE') {
+                returnPenaltyDropdown.innerHTML += `
+                    <option value="REPAIR">Repair</option>
+                    <option value="PAY">Pay</option>`;
+                transactionStatusDropdown.innerHTML += `
+                    <option value="PAID">Paid</option>
+                    <option value="UNPAID">Unpaid</option>
+                    <option value="REPAIRED">Repaired</option>
+                    <option value="UNREPAIRED">Unrepaired</option>`;
+            } else if (returnCondition.value === 'SEVERE DAMAGE' || returnCondition.value === 'LOST') {
+                returnPenaltyDropdown.innerHTML += `
+                    <option value="PAY">Pay</option>
+                    <option value="REPLACE">Replace</option>`;
+                transactionStatusDropdown.innerHTML += `
+                    <option value="PAID">Paid</option>
+                    <option value="UNPAID">Unpaid</option>
+                    <option value="REPLACED">Replaced</option>
+                    <option value="UNREPLACED">Unreplaced</option>`;
+            }
+        });
+
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('show');
+        });
+
+        document.getElementById('searchStudentNumber').addEventListener('input', function () {
+            if(this.value.length > 5) this.value = this.value.slice(0, 5)
+            if(this.value.length>4) searchStudentByStudentNumber()
+        })
+
+        document.getElementById('searchStudentNumberReturn').addEventListener('input', function () {
+            if (this.value.length > 5) this.value = this.value.slice(0, 5)
+            if (this.value.length>4) searchBorrowedBooksByStudentNumber()
+        })
+
+        document.getElementById('searchStudentNumberDamage').addEventListener('input', function () {
+            if (this.value.length > 5) this.value = this.value.slice(0, 5);
+            if (this.value.length>4) searchDamageBooksByStudentNumber()
+        })
+
+        document.getElementById('searchStudentNumberLost').addEventListener('input', function () {
+            if (this.value.length > 5) this.value = this.value.slice(0, 5);
+            if (this.value.length>4) searchLostBooksByStudentNumber()
+        
+        })
+        
+        document.getElementById('searchStudentNumberAccount').addEventListener('input', function () {
+            if (this.value.length > 5) this.value = this.value.slice(0, 5);
+            if (this.value.length>4) searchAccountByStudentNumber()
+        })
+        
+        document.getElementById('searchStudentNumberOverdue').addEventListener('input', function () {
+
+            if (this.value.length > 5) this.value = this.value.slice(0, 5);
+            if (this.value.length>4) searchOverdueBooksByStudentNumber()
+        })
+
+        document.getElementById('searchStudentNumberPenalty').addEventListener('input', function () {
+            if (this.value.length > 5) this.value = this.value.slice(0, 5);
+            if (this.value.length>4) searchPenaltyBooksByStudentNumber()
+        })
+        
+        document.getElementById('searchStudentNumberBorrow').addEventListener('input', function () {
+            if (this.value.length > 5) this.value = this.value.slice(0, 5);
+            if (this.value.length>4) searchBorrowRequestByStudentNumber()
+        })
+
+        document.getElementById('searchBookNumber').addEventListener('input', function () {
+            if (this.value.length > 13) this.value = this.value.slice(0, 13);
+            if (this.value.length > 13) searchLostBooksByStudentNumber()
+        })
+    
+        document.getElementById('bookNumberReg').addEventListener('input', function () {
+            if (this.value.length > 13) {
+                this.value = this.value.slice(0, 13);
+            }
+        })
+
+        document.getElementById('searchStudentNumberPenalty').addEventListener('input',function(){
+            if(this.value.trim() == '') clearSearchPenaltyBooksByStudentNumber()
+        })
+
+        document.getElementById('searchStudentNumberLost').addEventListener('input',function(){
+            if(this.value.trim() == '') clearSearchLostBooksByStudentNumber()
+        })
+
+        document.getElementById('searchStudentNumberDamage').addEventListener('input',function(){
+            if(this.value.trim() == '') clearSearchDamageBooksByStudentNumber()
+        })
+
+        document.getElementById('searchStudentNumberOverdue').addEventListener('input',function(){
+            if(this.value.trim() == '') clearSearchOverdueBooksByStudentNumber()
+        })
+        
+        document.getElementById('searchStudentNumberReturn').addEventListener('input',function(){
+            if(this.value.trim() == '') clearSearchBorrowedBooksByStudentNumber()
+        })
+        
+        document.getElementById('searchStudentNumber').addEventListener('input',function(){
+            if(this.value.trim() == '') clearStudentSearchResult()
+        }) 
+        
+        document.getElementById('searchStudentNumberAccount').addEventListener('input',function(){
+            if(this.value.trim() == '') clearSearchAccountByStudentNumber()
+        })
+
+        document.getElementById('searchBookNumber').addEventListener('input',function(){
+            if(this.value.trim() == '') clearBookSearchResult()
+        }) 
+
+        document.getElementById('searchStudentNumberBorrow').addEventListener('input',function(){
+            if(this.value.trim() == '') clearSearchBorrowRequestByStudentNumber()
+        })
+
+        function submitBook(){
+            const returnCondition = document.getElementById("returnCondition").value;
+            const returnPenalty = document.getElementById("returnPenalty").value;
+            const transactionStatus = document.getElementById('transactionStatus').value;
+            const selectedTransactionID = document.getElementById('transactionID').value;
+            const selectedBookNumber = document.getElementById('bookNumber').value;
+
+            if (
+                !returnCondition ||
+                !returnPenalty||
+                !transactionStatus
+            ) {
+                alert('All dropdown fields are required.');
+                return;
+            }
+           
+            returnBook(selectedTransactionID,returnCondition,returnPenalty,selectedBookNumber,transactionStatus)
+
+            closeReturnModal();
+        }
+        
+        function showReturnModal(transactionID,bookNumber) {
+            let selectedTransactionID=transactionID
+            let selectedBookNumber=bookNumber
+    
+            document.getElementById('transactionID').value=selectedTransactionID
+            document.getElementById('bookNumber').value=selectedBookNumber
+            document.getElementById("returnBookModal").style.display = "flex";
+        }
+
+        function closeReturnModal() {
+            document.getElementById("returnBookModal").style.display = "none";
+        }
+
+        function showApproveModal() {
+            document.getElementById("approveBookModal").style.display = "flex";
+        }
+
+        function closeApproveModal() {
+            document.getElementById("approveBookModal").style.display = "none";
+        }
+
+        function hideAllForms(){
+            document.getElementById('account').style.display = 'none';
+            document.getElementById('student').style.display = 'none';
+            document.getElementById('book').style.display = 'none';
+            document.getElementById('borrow').style.display = 'none';
+            document.getElementById('return').style.display = 'none';
+            document.getElementById('main').style.display = 'none';
+            document.getElementById('history').style.display = 'none';
+            document.getElementById('overdue').style.display = 'none';
+            document.getElementById('pendingPenalty').style.display = 'none';
+            document.getElementById('toBuy').style.display = 'none';
+            document.getElementById('toRepair').style.display = 'none';
+            document.getElementById('searchStudent').style.display = 'none';
+            document.getElementById('searchBook').style.display = 'none';
+            document.getElementById('damage').style.display = 'none';
+            document.getElementById('lost').style.display = 'none';
+            
+            message.innerText="";
+        }
+
+        function showAccountForm() {
+            fetchAccountRequest()
+            hideAllForms()
+            document.getElementById('account').style.display = 'block';
+            message.innerText="";
+        }
+      
+        function showMainForm() {
+            fetchMainDashBoard()
+            hideAllForms()
+            document.getElementById('main').style.display = 'block';
+            message.innerText="";
+        }
+      
+        function showHistoryForm() {
+            fetchBooksTransactionHistory()
+            hideAllForms()
+            document.getElementById('history').style.display = 'block';
+            message.innerText="";
+        }
+      
+        function showOverdueForm() {
+            fetchOverdueBooks()
+            hideAllForms()
+            document.getElementById('overdue').style.display = 'block';
+            message.innerText="";
+        }
+      
+        function showPenaltyForm() {
+            fetchPendingPenaltyBooks()
+            hideAllForms()
+            document.getElementById('pendingPenalty').style.display = 'block';
+            message.innerText="";
+        }
+
+        function showToBuyForm(){
+            fetchToBuyBooks()
+            hideAllForms()
+            document.getElementById('toBuy').style.display = 'block';
+            message.innerText="";
+
+        }
+
+        function showToRepairForm(){
+            fetchToRepairBooks()
+            hideAllForms()
+            document.getElementById('toRepair').style.display = 'block';
+            message.innerText="";
+        }
+
+        function showStudentForm() {
+            fetchStudents()
+            hideAllForms()
+            document.getElementById('student').style.display = 'block';
+            message.innerText="";
+        }
+
+        function showBookForm() {
+            fetchBooks()
+            hideAllForms()
+            document.getElementById('book').style.display = 'block';
+            message.innerText="";
+        }
+
+        function showBorrowForm() {
+            fetchBorrowRequest()
+            hideAllForms()
+            document.getElementById('borrow').style.display = 'block';
+            message.innerText="";
+        }
+     
+        function showReturnForm() {
+            fetchReturnRequest()
+            hideAllForms()
+            document.getElementById('return').style.display = 'block';
+            message.innerText="";
+        }
+    
+        function showSearchStudentForm() {
+            hideAllForms()
+            document.getElementById('searchStudent').style.display = 'block';
+            message.innerText="";
+        }
+      
+        function showSearchBookForm() {
+            hideAllForms()
+            document.getElementById('searchBook').style.display = 'block';
+            message.innerText="";
+        }
+     
+        function showDamageForm() {
+            fetchDamageBooks()
+            hideAllForms()
+            document.getElementById('damage').style.display = 'block';
+            message.innerText="";
+        }
+  
+        function showLostForm() {
+            fetchLostBooks()
+            hideAllForms()
+            document.getElementById('lost').style.display = 'block';
+            message.innerText="";
+        }
+      
+        function studentClearFields() {
+            document.getElementById('studentID').value = "";
+            document.getElementById('studentNumber').value = "";
+            document.getElementById('firstName').value = "";
+            document.getElementById('lastName').value = "";
+            document.getElementById('middleName').value = "";
+            document.getElementById('gradeYearLevel').value = "";
+            document.getElementById('courseStrand').value = "";
+            document.getElementById('phoneNumber').value = "";
+            document.getElementById('emailAddress').value = "";
+
+            const updateStudentButton = document.getElementById('studentButton');
+            updateStudentButton.disabled = false;
+        }
+
+        function accountClearFields(){
+            document.getElementById('accountStudentNumber').value = "";
+            document.getElementById('accountUsername').value = "";
+            document.getElementById('accountPassword').value = "";
+            document.getElementById('accountConfirmPassword').value = "";
+        }
+
+        function clearBookRegisterFields(){
+            document.getElementById('bookNumberReg').value=""
+            document.getElementById('bookAuthorReg').value=""
+            document.getElementById('bookTitleReg').value=""
+            document.getElementById('bookCategoryReg').value=""
+            document.getElementById('bookDescriptionReg').value=""
+            document.getElementById('frontCoverReg').value=""
+            document.getElementById('bookStocksReg').value=""
+        }
+
+        function clearStudentSearchResult(){
+            document.getElementById('studentPersonalDetails').innerHTML=''
+            document.getElementById('studentBookTransactionHistory').innerHTML=''
+            document.getElementById('searchStudentNumber').value=''
+            document.getElementById('searchStudentByStudentNumberContainer').style.display='none'
+            message.innerHTML=''
+        }
+
+        function clearBookSearchResult(){
+            document.getElementById('bookDetails').innerHTML=''
+            document.getElementById('bookTransactions').innerHTML=''
+            document.getElementById('searchBookNumber').value='' 
+            document.getElementById('searchBookByBookNumberContainer').style.display='none'
+            message.innerHTML=''
+        }
+      
+        async function fetchMainDashBoard(){
+            const totalStudents = document.getElementById('totalVerifiedStudentsMain')
+            const totalAccountRequests = document.getElementById('totalAccountRequestMain')
+            const totalBorrowRequests = document.getElementById('totalBorrowRequestMain')
+            const totalBorrowedBooks = document.getElementById('totalBorrowedBooksMain')
+            const totalReturnedBooks = document.getElementById('totalReturnedBooksMain')
+            const totalDamagedBooks = document.getElementById('totalDamagedBooksMain')
+            const totalLostBooks = document.getElementById('totalLostBooksMain')
+            const totalToBuyBooks = document.getElementById('totalToBuyBooksMain')
+            const totalToRepairBooks = document.getElementById('totalToRepairBooksMain')
+            const totalOverdueBooks = document.getElementById('totalOverdueBooksMain')
+            const totalBooks = document.getElementById('totalBooksMain')
+            const remainingBookStocks = document.getElementById('remainingBookStocksMain')
+            const allBooks = document.getElementById('allBooksMain')
+            const totalPendingPenaltyBooks = document.getElementById('totalPendingPenaltyBooksMain')
+
+
+            const response = await fetch('/mainDashBoard')
+            const [data] = await response.json()
+
+
+           totalStudents.innerHTML=data.totalVerifiedStudents
+           totalAccountRequests.innerHTML = data.totalAccountRequests
+           totalBorrowRequests.innerHTML = data.totalBorrowRequests
+           totalBorrowedBooks.innerHTML = data.totalBorrowedBooks
+           totalReturnedBooks.innerHTML= data.totalReturnedBooks
+           totalDamagedBooks.innerHTML =data.totalDamagedBooks
+           totalLostBooks.innerHTML=data.totalLostBooks
+           totalBooks.innerHTML = data.totalBooks
+           allBooks.innerHTML = data.allBookStocks
+           totalOverdueBooks.innerHTML =data.totalOverdueBooks
+           totalPendingPenaltyBooks.innerHTML = data.totalPendingPenaltyBooks
+           remainingBookStocks.innerHTML=data.remainingBookStocks
+           totalToBuyBooks.innerHTML=data.totalToBuyBooks
+           totalToRepairBooks.innerHTML=data.totalToRepairBooks
+           
+        }   
+      
+        async function fetchStudents() {
+            const studentsTable=document.getElementById('studentData')
+            const response = await fetch('/students')
+            const students = await response.json()
+
+            if(students.length>0){
+                studentsTable.innerHTML=students.map(student=>`
+                <tr>
+                    <td>${student.lastName},${student.firstName} ${student.middleName} </td>
+                    <td>${student.studentNumber}</td>
+                    <td>${student.courseStrand}</td>
+                    <td>${student.yearGradeLevel}</td>
+                    <td>${student.phoneNumber}</td>
+                    <td>${student.emailAddress}</td>
+                    <td><button class="action-btn edit-btn" onclick="updateStudent(
+                            '${student.studentID}',
+                            '${student.lastName}',
+                            '${student.firstName}',
+                            '${student.middleName}',
+                            '${student.studentNumber}',
+                            '${student.courseStrand}',
+                            '${student.yearGradeLevel}',
+                            '${student.phoneNumber}',
+                            '${student.emailAddress}'
+                        )">EDIT</button>
+                    </td>
+                    </tr>
+            `).join('')
+            }else{
+                studentsTable.innerHTML=`<tr><td colspan="7" style="text-align:center;"> <h2>Empty Students</h2> </td></tr>`
+                
+            }
+        }
+     
+        function updateStudent(studentID,lastName,firstName,middleName,studentNumber,courseStrand,yearGradeLevel,phoneNumber,emailAddress){
+            document.getElementById('studentID').value=studentID
+            document.getElementById('lastName').value=lastName
+            document.getElementById('firstName').value=firstName
+            document.getElementById('middleName').value=middleName
+            document.getElementById('studentNumber').value=studentNumber
+            document.getElementById('courseStrand').value=courseStrand
+            document.getElementById('gradeYearLevel').value=yearGradeLevel
+            document.getElementById('phoneNumber').value=phoneNumber
+            document.getElementById('emailAddress').value=emailAddress
+            
+            const updateStudentButton = document.getElementById('studentButton');
+            updateStudentButton.disabled = false;
+
+        }
+
+        async function updateStudentDetails(e) {
+            e.preventDefault()
+            const studentID = document.getElementById('studentID').value.trim();
+            const studentNumber = document.getElementById('studentNumber').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const firstName = document.getElementById('firstName').value.trim();
+            const middleName = document.getElementById('middleName').value.trim();
+            const yearGradeLevel = document.getElementById('gradeYearLevel').value.trim();
+            const courseStrand = document.getElementById('courseStrand').value.trim();
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            const emailAddress = document.getElementById('emailAddress').value.trim();
+            
+            
+            if(!lastName ||!studentNumber || !firstName || !middleName || !yearGradeLevel || !courseStrand || !phoneNumber ||!emailAddress) return message.innerHTML='Invalid Input'
+            if(studentNumber.length < 5) return message.innerHTML=' Length of Student Number is Invalid'
+            try {
+                const response = await fetch('/student', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({studentNumber, lastName,firstName,middleName, yearGradeLevel, courseStrand, phoneNumber, emailAddress,studentID })
+                });
+
+                const data = await response.json();
+                message.innerHTML = data.message; 
+                studentClearFields()
+                fetchStudents()
+            } catch (error) {
+                console.error('Error:', error);
+                message.innerText = 'Update failed!';
+            }
+        }
+
+        async function fetchAccountRequest() {
+            const accountTable = document.getElementById('accountRequest');
+            try {
+                const response = await fetch('/unverified');
+                const accounts = await response.json();
+
+                if(accounts.length>0){
+                    accountTable.innerHTML = accounts.map(account => `
+                    <tr>
+                        <td>${account.studentNumber || 'N/A'}</td>
+                        <td>${account.username || 'N/A'}</td>
+                        <td>${new Date(account.dateTimeRegistered).toLocaleDateString() || 'N/A'}</td>
+                        <td>
+                            <button class="action-btn approve-btn" 
+                                onclick="handleAccountRequest('${account.id}', '${account.studentNumber}', 'VERIFIED')">
+                                Approve
+                            </button>
+                            <button class="action-btn reject-btn" 
+                                onclick="handleAccountRequest('${account.id}', '${account.studentNumber}', 'REJECTED')">
+                                Reject
+                            </button>
+                        </td>
+                    </tr>
+                `).join('')
+                }else{
+                    accountTable.innerHTML=`<tr><td> <h2 colspan="4">Empty Account Request</h2> </td></tr>`
+                }
+                
+            } catch (error) {
+                console.error('Error fetching account requests:', error);
+                message.innerHTML = 'Failed to load account requests';
+                accountTable.innerHTML = '<tr><td colspan="4">Error loading data</td></tr>';
+            }
+        }
+
+        async function fetchVerifiedAccounts() {
+            
+            const verifiedStudentAccountTable = document.getElementById('verifiedStudentAccounts');
+                const response = await fetch('/verified');
+                const accounts = await response.json();
+
+                if(accounts.length>0){
+                    verifiedStudentAccountTable.innerHTML = accounts.map(account => `
+                    <tr>
+                        <td>${account.studentNumber}</td>
+                        <td>${account.username}</td>
+                        <td>${new Date(account.dateTimeRegistered).toLocaleDateString()}</td>
+                        <td>
+                            <button class="action-btn forgotPassword-btn" onclick="showForgotPasswordForm('${account.username}')"> Forgot Password </button>
+                        </td>
+                    </tr>
+                `).join('')
+                }else{
+                    verifiedStudentAccountTable.innerHTML=`<tr><td> <h2>Empty Verified Student</h2> </td></tr>`
+                }
+        }
+       
+        function showForgotPasswordForm(username) {
+            document.getElementById('accountUsername').value = username;
+
+            document.getElementById('forgotPassword').style.display = 'flex';
+            document.querySelector('.forgotPasswordOverlay').style.display = 'block';
+        }
+
+        function closeForgotPasswordForm() {
+            document.getElementById('forgotPassword').style.display = 'none';
+            document.querySelector('.forgotPasswordOverlay').style.display = 'none';
+        }
+
+        async function changePassword() {
+
+            const username = document.getElementById('accountUsername').value
+            const newPassword= document.getElementById('newPassword').value
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value
+            
+
+            if(!newPassword || ! confirmNewPassword) return alert('Input Fields are required')
+            if(newPassword !== confirmNewPassword) return alert('Password doesnt match')
+            if(newPassword.length < 8 || confirmNewPassword.length <8) return alert('Password length is invalid')
+
+            const response = await fetch('/forgotPassword',{
+                method:'PUT',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({username, newPassword})
+            })
+
+            const data = await response.json()
+            if(response.status === 201){
+                alert(data.message)
+                document.getElementById('accountUsername').value=``
+                document.getElementById('newPassword').value=``
+                document.getElementById('confirmNewPassword').value=``
+                closeForgotPasswordForm()
+                clearSearchAccountByStudentNumber()
+                fetchAccountRequest()
+                fetchVerifiedAccounts()
+                
+            }
+        }
+
+        async function handleAccountRequest(id, studentNumber ,action) {
+            const method = action === 'VERIFIED' ? 'PUT' : 'DELETE'
+            const act = action ==='VERIFIED' ? 'verify':'reject'
+            if (confirm(`Are you sure you want to ${act} this student?`)) {
+                try {
+                    const response = await fetch(`/account`, {
+                        method:`${method}`,
+                        headers:{'Content-Type':'Application/JSON'},
+                        body:JSON.stringify({id,studentNumber,action})
+                    } )
+    
+                    const data = await response.json()
+                    message.innerHTML = data.message
+                    fetchAccountRequest()
+                    fetchVerifiedAccounts()
+                } catch (err) {
+                    alert('Something went wrong.')
+                    console.error(err)
+                }
+            }
+        }
+
+        async function registerBookDetails(e) {
+            e.preventDefault()
+
+            const bookNumber = document.getElementById('bookNumberReg').value.trim()
+            const bookAuthor = document.getElementById('bookAuthorReg').value.trim()
+            const bookTitle = document.getElementById('bookTitleReg').value.trim()
+            const bookCategory = document.getElementById('bookCategoryReg').value.trim()
+            const bookDescription = document.getElementById('bookDescriptionReg').value.trim()
+            const frontCover = document.getElementById('frontCoverReg')
+            const bookStocks = document.getElementById('bookStocksReg').value.trim()
+
+            if(!bookNumber || !bookAuthor || !bookTitle ||!bookCategory ||!bookDescription || !frontCover || !bookStocks) return  alert('Input Fields Required')
+            if(bookNumber.length < 12) return  alert('Book Number length is invalid')
+            if(bookStocks.value == 0) return  alert('Invalid Bookstocks')
+
+            const formData = new FormData(); 
+            formData.append('bookNumber', bookNumber);
+            formData.append('bookAuthor', bookAuthor);
+            formData.append('bookTitle', bookTitle);
+            formData.append('bookCategory', bookCategory);
+            formData.append('bookDescription', bookDescription);
+            formData.append('frontCover', frontCover.files[0]); 
+            formData.append('bookStocks', bookStocks);
+
+            const response = await fetch('/registerBook',{
+                method:'POST',
+                body:formData 
+            })
+
+            const data = await response.json();
+            if(response.status===201) clearBookRegisterFields()
+            alert(data.message)
+            fetchBooks()
+        }
+
+        async function fetchBooks(){
+            const booksTable = document.getElementById('booksData')
+            const response = await fetch('/books')
+            const books= await response.json()
+        
+            if(books.length>0){
+                booksTable.innerHTML=books.map(book=>`
+                 <tr>
+                   
+                    <td><img src="../../imageUploads/${book.frontCover}" width="200px" height="200px"></td>
+                    <td>${book.bookNumber}</td>
+                    <td>${book.bookTitle}</td>
+                    <td>${book.bookAuthor}</td>
+                    <td>${book.bookCategory}</td>
+                    <td>${book.bookDescription}</td>
+                    <td>${book.bookStocks}</td>
+                    <td><button class="action-btn edit-btn" onclick="showUpdateBookStocks(
+                        '${book.bookID}',
+                        '${book.bookTitle}',
+                        '${book.bookStocks}'
+                        )">UPDATE STOCKS</button></td>
+                </tr>
+            
+            `).join('')
+            }else{
+                booksTable.innerHTML=`<tr><td colspan="8" style="text-align:center;"> <h2>Empty Books</h2> </td></tr>`
+            }
+            
+            
+        }
+      
+        async function showUpdateBookStocks(bookID,bookTitle,bookStocks) {
+        document.getElementById('bookIDUS').innerHTML=bookID
+        document.getElementById('bookTitleUS').innerHTML=bookTitle
+        document.getElementById('bookStocksUS').value=bookStocks
+        document.getElementById('updateBookStocks').style.display = 'block';
+    }
+    
+        function closeUpdateBookStocks() {
+        document.getElementById('updateBookStocks').style.display = 'none';
+    }
+ 
+        async function updateBookStocks() {
+        const bookID = document.getElementById('bookIDUS').innerHTML
+        const bookStocks = document.getElementById('bookStocksUS').value
+        console.log(bookID , " " ,bookStocks)
+
+        const response = await fetch('/updateBookStocks',{
+            method:'PUT',
+            headers:{'Content-Type':'Application/JSON'},
+            body:JSON.stringify({bookID,bookStocks})
+        })
+        const data = await response.json()
+        message.innerHTML=data.message
+        fetchBooks()
+        closeUpdateBookStocks()
+
+    }
+
+        async function fetchBorrowRequest(){
+            const borrowRequestTable=document.getElementById('borrowRequest')
+            const response = await fetch('/bookRequest')
+            const borrowRequests= await response.json();
+
+            if(borrowRequests.length>0){
+                borrowRequestTable.innerHTML=borrowRequests.map(request=>`
+                        <tr>
+                            
+                            <td>${request.fullName}</td>
+                            <td>${request.studentNumber}</td>
+                            <td>${request.bookTitle}</td>
+                            <td>${request.bookNumber}</td>
+                            <td>${new Date(request.dateTimeBooked).toLocaleString()}</td>
+                            <td>
+                                <button class="action-btn reject-btn" onclick="handleBookRequest('${request.transactionID}','REJECTED','${request.bookNumber}')">Reject</button>
+                                <button class="action-btn approve-btn" onclick="handleBookRequest('${request.transactionID}','CLAIMED','${request.bookNumber}')">Approve</button>
+                            </td>
+                        </tr>
+
+                `).join('')
+            }else{
+                borrowRequestTable.innerHTML=`<tr><td colspan="7" style="text-align:center;"> <h2>Empty Borrow Request Book</h2> </td></tr>`
+            }
+        }
+        
+        async function handleBookRequest(transactionID,action,bookNumber) {
+            const dateTimeClaimed = currentDateTime
+            const dateToBeReturn = currentDatePlus3Days
+            
+            
+           
+            const alertMessage = action ==='REJECTED'? 'Are you sure do you want to Reject?':'Are you sure do you want to Approve?'
+                if(confirm(alertMessage)){
+                    try {
+                        const response = await fetch('/handleRequest',{
+                            method:'PUT',
+                            headers:{'Content-Type':'Application/JSON'},
+                            body:JSON.stringify({transactionID,action,dateTimeClaimed,dateToBeReturn,bookNumber})
+                        })
+                        const data = await response.json()
+                        alert(`${data.message} note that the return date will be on ${dateToBeReturn}`)
+                    } catch (error) {
+                        console.error(error)
+                    }
+                }
+            fetchBorrowRequest()
+            clearSearchBorrowRequestByStudentNumber()
+        }
+
+        async function fetchReturnRequest() {
+            const returnRequestTable= document.getElementById('returnRequest')
+
+            const response = await fetch('/borrowedBooks')
+            const returnRequests = await response.json()
+            
+
+           if(returnRequests.length>0){
+            returnRequestTable.innerHTML=returnRequests.map(request=>`
+                <tr>
+                    <td>${request.fullName}</td>
+                    <td>${request.studentNumber}</td>
+                    <td>${request.bookTitle}</td>
+                    <td>${request.bookNumber}</td>
+                    <td>${new Date(request.dateTimeClaimed).toLocaleString()}</td>
+                    <td>${new Date(request.dateToBeReturn).toLocaleDateString()}</td>
+                    <td><button class="action-btn" onclick="showReturnModal('${request.transactionID}','${request.bookNumber}')" style="background-color: var(--maroon); color: white;">Return</button></td>
+                </tr>`).join('')
+           }else{
+            returnRequestTable.innerHTML=`<tr><td colspan="7" style="text-align:center;"> <h2>Empty Return Book</h2> </td></tr>`
+           }
+        }
+      
+        async function searchBorrowedBooksByStudentNumber(){
+            const studentNumber = document.getElementById('searchStudentNumberReturn').value.trim()
+            const returnRequestTable= document.getElementById('returnRequest')
+
+            if(!studentNumber) return message.innerHTML='Please Enter Valid Student Number'
+            if(studentNumber.length < 5) return message.innerHTML=' Length of Student Number is Invalid'
+
+            const response = await fetch('/searchBorrowedBooksByStudentNumber',{
+                method:'POST',
+                headers:{'Content-Type':'Application/JSON'},
+                body:JSON.stringify({studentNumber})
+            })
+
+            
+            const booksData = await response.json()
+
+            if(response.status === 404) return message.innerHTML=booksData.message
+            if(booksData.length > 0){
+                message.innerHTML=``
+                returnRequestTable.innerHTML=booksData.map(data=>`
+                    <tr>
+                        <td>${data.fullName}</td>
+                        <td>${data.studentNumber}</td>
+                        <td>${data.bookTitle}</td>
+                        <td>${data.bookNumber}</td>
+                        <td>${new Date(data.dateTimeClaimed).toLocaleString()}</td>
+                        <td>${new Date(data.dateToBeReturn).toLocaleDateString()}</td>
+                        <td><button class="action-btn" onclick="showReturnModal('${data.transactionID}','${data.bookNumber}')" style="background-color: var(--maroon); color: white;">Return</button></td>
+                    </tr>
+            `).join('')
+            }else{
+                message.innerHTML=``
+                returnRequestTable.innerHTML=`
+                                    <tr>
+                                        <td colspan="7" style="text-align: center;"><h1>Student Doesnt Have Books that needs to Return</h1></td>
+                                    </tr>`
+            }
+            
+        }
+
+        async function clearSearchBorrowedBooksByStudentNumber() {
+            const studentNumber = document.getElementById('searchStudentNumberReturn')
+            const returnRequestTable= document.getElementById('returnRequest')
+            studentNumber.value=``
+            returnRequestTable.innerHTML=``
+            message.innerHTML=``
+            fetchReturnRequest()
+        }
+
+        async function returnBook(transactionID,returnCondition,returnPenalty,bookNumber,transactionStatus) {
+            const dateTimeReturned = currentDateTime
+            const dateReported = currentDate
+            
+     
+            const response = await fetch('/returnBook',{
+                method:'PUT',
+                headers:{'Content-Type':'Application/JSON'},
+                body:JSON.stringify({transactionID,dateTimeReturned,dateReported,returnCondition,returnPenalty,bookNumber,transactionStatus})
+            })
+            const data = await response.json()
+            message.innerHTML=data.message
+            fetchReturnRequest()
+            fetchOverdueBooks()
+
+        }
+
+        async function fetchBooksTransactionHistory() {
+            const response = await fetch('/bookTransactions')
+            const transactions= await response.json()
+            
+            const transactionHistoryTable = document.getElementById('transactionHistory')
+            transactionHistoryTable.innerHTML=transactions.map(transaction=>`
+                        <tr>
+                            <td>${transaction.lastName}, ${transaction.firstName} ${transaction.middleName}</td>
+                            <td>${transaction.studentNumber}</td>
+                            <td>${transaction.bookTitle}</td>
+                            <td>${transaction.bookNumber}</td>
+                            <td>${transaction.dateTimeClaimed ? new Date(transaction.dateTimeClaimed).toLocaleString() : 'N/A'}</td>
+                            <td>${transaction.returnCondition || 'N/A'}</td>
+                            <td>${transaction.dateReported ? new Date(transaction.dateReported).toLocaleDateString() : 'N/A'}</td>
+                            <td>${transaction.datePaid ? new Date(transaction.datePaid).toLocaleDateString() : 'N/A'}</td>
+                            <td>${transaction.dateReplaced ? new Date(transaction.dateReplaced).toLocaleDateString() : 'N/A'}</td>
+                            <td>${transaction.dateRepaired ? new Date(transaction.dateRepaired).toLocaleDateString() : 'N/A'}</td>
+                            <td>${transaction.dateResolved ? new Date(transaction.dateResolved).toLocaleDateString() : 'N/A'}</td>
+                            <td>${transaction.returnPenalty || 'N/A'}</td>
+                            <td>${transaction.transactionStatus}</td>
+                        </tr>
+            `).join('')
+        }
+        
+        async function updateBookTransactionStatus(){
+            await fetch('/updateTransactionStatus',{
+                method:'PUT',
+                headers:{'Content-Type':'Application/JSON'},
+                body:JSON.stringify({currentDate})
+            })
+        }
+
+        async function bookRequestExpiration() {
+            await fetch('/bookRequestExpiration',{
+                method:'PUT',
+                headers:{'Content-Type':'Application/JSON'},
+                body:JSON.stringify({currentDateTime})
+            })
+            
+        }
+        
+        async function fetchPendingPenaltyBooks(){
+            const pendingPenaltyBooksTable = document.getElementById('pendingPenaltyBooks')
+            const response = await fetch('/pendingPenaltyBooks')
+            const pendingPenaltyBooks = await response.json()
+
+            if(pendingPenaltyBooks.length>0){
+                pendingPenaltyBooksTable.innerHTML=pendingPenaltyBooks.map(data=>`
+                         <tr>
+                                <td>${data.fullName}</td>
+                                <td>${data.studentNumber}</td>
+                                <td>${data.bookTitle}</td>
+                                <td>${data.bookNumber}</td>
+                                <td>${new Date(data.dateReported).toLocaleDateString()}</td>
+                                <td>${data.returnCondition}</td>
+                                <td>${data.returnPenalty}</td>
+                                <td>${data.transactionStatus}</td>
+                                <td>
+                                    <button onclick="updateRemarks('${data.transactionID}','${data.transactionStatus}','${data.bookNumber}')" style="color:green; padding:12px;">
+                                        <i class="fas fa-check"></i> 
+                                    </button>
+                                </td>
+                        </tr>
+            `).join('')
+            }else{
+                pendingPenaltyBooksTable.innerHTML=`<tr><td colspan="9" style="text-align:center;"> <h2>Empty Penalties</h2> </td></tr>`
+            }
+        }
+        
+        async function updateRemarks(transactionID,transactionStatus,bookNumber){
+            const dateProcess = currentDateTime
+            let action;
+            if(transactionStatus == 'UNPAID'){
+                action = 'PAID'
+            }else if(transactionStatus == 'UNREPLACED'){
+                action = 'REPLACED'
+            }else{
+                action = 'REPAIRED'
+            }
+
+            const alertMessage = `Click 'OK' to complete action. ${action}`
+
+            if(confirm(alertMessage)){
+               const response = await fetch('/updatePendingPenalty',{
+                    method:'PUT',
+                    headers:{'Content-Type':'Application/json'},
+                    body:JSON.stringify({transactionID,action,dateProcess,bookNumber})
+               })
+               const data = await response.json()
+               message.innerHTML = data.message
+               fetchPendingPenaltyBooks()
+
+            }
+        }
+
+        async function fetchOverdueBooks() {
+            const overdueBooksTable = document.getElementById('overdueBooks')
+            const response = await fetch('/overdueBooks')
+            const books = await response.json()
+            
+            
+            if(books.length>0){
+                overdueBooksTable.innerHTML=books.map(data=>`
+                        <tr>
+                            <td>${data.lastName}, ${data.firstName} ${data.middleName}</td>
+                            <td>${data.studentNumber}</td>
+                            <td>${data.bookTitle}</td>
+                            <td>${data.bookNumber}</td>
+                            <td>${new Date(data.dateTimeClaimed).toLocaleString()}</td>
+                            <td>${new Date(data.dateToBeReturn).toLocaleDateString()}</td>
+                            <td><button class="action-btn" onclick="showOverdueMessage('${data.transactionID}','${data.bookNumber}'); " style="background-color: var(--maroon); color: white;">Return</button></td>
+                        </tr>
+            `).join('')
+            }else{
+                overdueBooksTable.innerHTML=`<tr><td colspan="9" style="text-align:center;"> <h2>No overdue books</h2> </td></tr>`
+            }
+        }
+      
+        function showOverdueMessage(transactionID,bookNumber){
+            alert('Book was returned as Overdue. Note that student has additional library service if has another penalty!')
+            showReturnModal(transactionID,bookNumber);
+        }
+        
+        async function searchStudentByStudentNumber(){
+            const studentNumber = document.getElementById('searchStudentNumber').value.trim()
+            const studentPersonalDetailsForm = document.getElementById('studentPersonalDetails')
+            const studentBookTransactionHistoryTable = document.getElementById('studentBookTransactionHistory')
+            const mainContainer = document.getElementById('searchStudentByStudentNumberContainer')
+
+            if(!studentNumber) return message.innerHTML='Please Enter Valid Student Number'
+            if(studentNumber.length < 5) return message.innerHTML=' Length of Student Number is Invalid'
+            
+
+            const response = await fetch('/searchStudentNumber',{
+                method:'POST',
+                headers:{'Content-Type':'Application/JSON'},
+                body:JSON.stringify({studentNumber})
+            })
+
+            studentPersonalDetailsForm.innerHTML=``
+            studentBookTransactionHistoryTable.innerHTML=``
+
+            const data = await response.json()
+            if(response.status === 404) return message.innerHTML=data.message
+            if(response.status === 220){
+                message.innerHTML=''
+                studentPersonalDetailsForm.innerHTML=`
+                                    <p><strong>Account Status:</strong> ${data.studentDetails[0].accountStatus}</p>
+                                    <p><strong>Penalty:</strong> <span style="color:${data.studentPenalty[0].penaltyCount > 0 ? 'red':'green'};" >${data.studentPenalty[0].penaltyCount}</span></p>
+                                    <p><strong>Overdue:</strong> <span style="color:${data.studentOverdue[0].overdueCount > 0 ? 'red':'green'};" >${data.studentOverdue[0].overdueCount}</span></p>
+                                    <p><strong>Username:</strong> ${data.studentDetails[0].username}</p>
+                                    <p><strong>Date Registered:</strong> ${new Date(data.studentDetails[0].dateTimeRegistered).toLocaleDateString()}</p>
+                                    <p><strong>Full Name:</strong> ${data.studentDetails[0].fullName}</p>
+                                    <p><strong>Grade/Year Level:</strong> ${data.studentDetails[0].yearGradeLevel}</p>
+                                    <p><strong>Course/Strand:</strong> ${data.studentDetails[0].courseStrand}</p>
+                                    <p><strong>Email Address:</strong> ${data.studentDetails[0].emailAddress}</p>
+                                    <p><strong>Phone Number:</strong> ${data.studentDetails[0].phoneNumber}</p>
+                                    
+                                    `
+
+                if(data.studentBookHistory.length>0){
+                    studentBookTransactionHistoryTable.innerHTML=data.studentBookHistory.map(bookHistory=>`
+                                <tr>
+                                    <td>${bookHistory.bookTitle}</td>
+                                    <td>${bookHistory.bookNumber}</td>
+                                    <td>${bookHistory.dateTimeClaimed ? new Date(bookHistory.dateTimeClaimed).toLocaleString() : 'N/A'}</td>
+                                    <td>${bookHistory.dateToBeReturn ? new Date(bookHistory.dateToBeReturn).toLocaleDateString() : 'N/A'}</td>
+                                    <td>${bookHistory.dateTimeReturned ? new Date(bookHistory.dateTimeReturned).toLocaleDateString() : 'N/A'}</td>
+                                    <td>${bookHistory.returnCondition || 'N/A'}</td>
+                                    <td>${bookHistory.dateReported ? new Date(bookHistory.dateReported).toLocaleDateString() : 'N/A'}</td>
+                                    <td>${bookHistory.datePaid ? new Date(bookHistory.datePaid).toLocaleDateString() : 'N/A'}</td>
+                                    <td>${bookHistory.dateReplaced ? new Date(bookHistory.dateReplaced).toLocaleDateString() : 'N/A'}</td>
+                                    <td>${bookHistory.dateRepaired ? new Date(bookHistory.dateRepaired).toLocaleDateString() : 'N/A'}</td>
+                                    <td>${bookHistory.dateResolved ? new Date(bookHistory.dateResolved).toLocaleDateString() : 'N/A'}</td>
+                                    <td>${bookHistory.returnPenalty || 'N/A'}</td>
+                                    <td>${bookHistory.transactionStatus}</td>
+                                </tr>`).join('')
+                }else{
+                    studentBookTransactionHistoryTable.innerHTML+=`
+                                    <tr>
+                                        <td colspan="13" style="text-align: center;"><h1>No History</h1></td>
+                                    </tr>
+                    `
+
+                }
+                mainContainer.style.display='block'
+                
+            }
+        }
+
+        async function searchBookByBookNumber(){
+            const bookNumber = document.getElementById('searchBookNumber').value.trim()
+            const bookDetailsForm = document.getElementById('bookDetails')
+            const bookTransactionsTable = document.getElementById('bookTransactions')
+            const mainContainer =  document.getElementById('searchBookByBookNumberContainer')
+
+            if(!bookNumber) return message.innerHTML='Please Enter Valid Book Number'
+            if(bookNumber.length < 6) return message.innerHTML='Length of Book Number is Invalid'
+
+            const response = await fetch('/searchBookNumber',{
+                method:'POST',
+                headers:{'Content-Type':'Application/JSON'},
+                body:JSON.stringify({bookNumber})
+            })
+            const data = await response.json()
+            bookDetailsForm.innerHTML=``
+            bookTransactionsTable.innerHTML=``
+
+            if(response.status==404) return message.innerHTML=data.message
+            if(response.status === 220){
+                message.innerHTML=``
+                bookDetailsForm.innerHTML=`
+                                    <p><strong>Book Title:</strong> ${data.bookDetails[0].bookTitle}</p>
+                                    <p><strong>Book Author:</strong> ${data.bookDetails[0].bookAuthor}</p>
+                                    <p><strong>Book Category:</strong> ${data.bookDetails[0].bookCategory}</p>
+                                    <p><strong>Book Stocks:</strong> ${data.bookDetails[0].bookStocks}</p>`
+
+                if(data.bookTransactions.length > 0){
+                    bookTransactionsTable.innerHTML=data.bookTransactions.map(transaction=>`
+                                <tr>
+                                    
+                                    <td>${transaction.fullName}</td>
+                                    <td>${transaction.studentNumber}</td>
+                                    <td>${transaction.dateTimeClaimed ? new Date(transaction.dateTimeClaimed).toLocaleString() : 'N/A'}</td>
+                                    <td>${transaction.dateToBeReturn ? new Date(transaction.dateToBeReturn).toLocaleDateString() : 'N/A'}</td>
+                                    <td>${transaction.dateTimeReturned ? new Date(transaction.dateTimeReturned).toLocaleString() : 'N/A'}</td>
+                                    <td>${transaction.returnCondition || 'N/A'}</td>
+                                    <td>${transaction.dateReported ? new Date(transaction.dateReported).toLocaleDateString() : 'N/A'}</td>
+                                    <td>${transaction.datePaid ? new Date(transaction.datePaid).toLocaleDateString() : 'N/A'}</td>
+                                    <td>${transaction.dateReplaced ? new Date(transaction.dateReplaced).toLocaleDateString() : 'N/A'}</td>
+                                    <td>${transaction.dateRepaired ? new Date(transaction.dateRepaired).toLocaleDateString() : 'N/A'}</td>
+                                    <td>${transaction.dateResolved ? new Date(transaction.dateResolved).toLocaleDateString() : 'N/A'}</td>
+                                    <td>${transaction.returnPenalty || 'N/A'}</td>
+                                    <td>${transaction.transactionStatus}</td>
+                                </tr>
+                                `).join('')
+                }else{
+                    bookTransactionsTable.innerHTML+=`
+                                    <tr>
+                                        <td colspan="13" style="text-align: center;"><h1>No book Transaction</h1></td>
+                                    </tr>
+                    `
+                }
+                mainContainer.style.display='block'
+            }else{
+                message.innerHTML=data.message
+            }
+
+        }
+
+        async function fetchDamageBooks() {
+            const damagaBooksTable = document.getElementById('damagedBooks')
+
+            const response = await fetch('/damageBooks')
+            const damageBooks= await response.json()
+
+            
+            if(damageBooks.length>0){
+                message.innerHTML=``
+                damagaBooksTable.innerHTML=damageBooks.map(book=>`
+                            <tr>
+                                <td>${book.fullName}</td>
+                                <td>${book.studentNumber}</td>
+                                <td>${book.bookTitle}</td>
+                                <td>${book.bookNumber}</td>
+                                <td>${book.returnCondition}</td>
+                                <td>${book.dateReported ? new Date(book.dateReported).toLocaleDateString() : 'N/A'}</td>
+                                <td>${book.datePaid ? new Date(book.datePaid).toLocaleDateString() : 'N/A'}</td>
+                                <td>${book.dateReplaced ? new Date(book.dateReplaced).toLocaleDateString() : 'N/A'}</td>
+                                <td>${book.dateRepaired ? new Date(book.dateRepaired).toLocaleDateString() : 'N/A'}</td>
+                                <td>${book.dateResolved ? new Date(book.dateResolved).toLocaleDateString() : 'N/A'}</td>
+                                <td>${book.returnPenalty}</td>
+                                <td>${book.transactionStatus}</td>
+                            </tr>
+            `).join('')
+            }else{
+                message.innerHTML=``
+                damagaBooksTable.innerHTML=`
+                        <tr>
+                            <td colspan="12" style="text-align: center;"><h2>Empty Damage Books</h2></td>
+                        </tr>
+                `
+            }
+            
+        }
+      
+        async function searchDamageBooksByStudentNumber() {
+            const studentNumber = document.getElementById('searchStudentNumberDamage').value.trim()
+            const damagaBooksTable = document.getElementById('damagedBooks')
+
+            
+            if(!studentNumber) return message.innerHTML='Please Enter Valid Student Number'
+            if(studentNumber.length < 5) return message.innerHTML=' Length of Student Number is Invalid'
+
+            const response = await fetch(`/damageBooks/${studentNumber}`)
+            const damageBooks= await response.json()
+
+
+            if(response.status === 404) return message.innerHTML=damageBooks.message
+            if(damageBooks.length>0){
+                message.innerHTML=``
+                damagaBooksTable.innerHTML=damageBooks.map(book=>`
+                            <tr>
+                                <td>${book.fullName}</td>
+                                <td>${book.studentNumber}</td>
+                                <td>${book.bookTitle}</td>
+                                <td>${book.bookNumber}</td>
+                                <td>${book.returnCondition}</td>
+                                <td>${book.dateReported ? new Date(book.dateReported).toLocaleDateString() : 'N/A'}</td>
+                                <td>${book.datePaid ? new Date(book.datePaid).toLocaleDateString() : 'N/A'}</td>
+                                <td>${book.dateReplaced ? new Date(book.dateReplaced).toLocaleDateString() : 'N/A'}</td>
+                                <td>${book.dateRepaired ? new Date(book.dateRepaired).toLocaleDateString() : 'N/A'}</td>
+                                <td>${book.dateResolved ? new Date(book.dateResolved).toLocaleDateString() : 'N/A'}</td>
+                                <td>${book.returnPenalty}</td>
+                                <td>${book.transactionStatus}</td>
+                            </tr>
+            `).join('')
+            }else{
+                message.innerHTML=``
+                damagaBooksTable.innerHTML=`
+                        <tr>
+                            <td colspan="12" style="text-align: center;"><h1>Student had no Damage Books</h1></td>
+                        </tr>
+                `
+            }
+        }
+        
+        function clearSearchDamageBooksByStudentNumber(){
+            const studentNumber = document.getElementById('searchStudentNumberDamage')
+            const damagaBooksTable = document.getElementById('damagedBooks')
+
+            studentNumber.value=``
+            damagaBooksTable.innerHTML=``
+            message.innerHTML=``
+            fetchDamageBooks()
+        }
+
+        async function fetchLostBooks() {
+            const lostBooksTable = document.getElementById('lostBooks')
+
+            const response = await fetch('/lostBooks')
+            const lostBooks= await response.json()
+
+            if(lostBooks.length>0){
+                lostBooksTable.innerHTML=lostBooks.map(book=>`
+                            <tr>
+                                <td>${book.fullName}</td>
+                                <td>${book.studentNumber}</td>
+                                <td>${book.bookTitle}</td>
+                                <td>${book.bookNumber}</td>
+                                <td>${book.dateReported ? new Date(book.dateReported).toLocaleDateString() : 'N/A'}</td>
+                                <td>${book.datePaid ? new Date(book.datePaid).toLocaleDateString() : 'N/A'}</td>
+                                <td>${book.dateReplaced ? new Date(book.dateReplaced).toLocaleDateString() : 'N/A'}</td>
+                                <td>${book.dateResolved ? new Date(book.dateResolved).toLocaleDateString() : 'N/A'}</td>
+                                <td>${book.returnPenalty}</td>
+                                <td>${book.transactionStatus}</td>
+                            </tr>
+            `).join('')
+            }else{
+                lostBooksTable.innerHTML=`
+                            <tr>
+                                <td colspan="10" style="text-align: center;"><h2>Empty Lost Books</h2></td>
+                            </tr>`
+            }
+            
+        }
+
+        async function searchLostBooksByStudentNumber() {
+
+            const studentNumber =document.getElementById('searchStudentNumberLost').value.trim()
+            const lostBooksTable = document.getElementById('lostBooks')
+
+            if(!studentNumber) return message.innerHTML='Please Enter Valid Student Number'
+            if(studentNumber.length < 5) return message.innerHTML=' Length of Student Number is Invalid'
+
+
+            const response = await fetch(`/lostBooks/${studentNumber}`)
+            const lostBooks= await response.json()
+            if(response.status === 404) return message.innerHTML=lostBooks.message
+            if(lostBooks.length>0){
+                lostBooksTable.innerHTML=lostBooks.map(book=>`
+                            <tr>
+                                <td>${book.fullName}</td>
+                                <td>${book.studentNumber}</td>
+                                <td>${book.bookTitle}</td>
+                                <td>${book.bookNumber}</td>
+                                <td>${book.dateReported ? new Date(book.dateReported).toLocaleDateString() : 'N/A'}</td>
+                                <td>${book.datePaid ? new Date(book.datePaid).toLocaleDateString() : 'N/A'}</td>
+                                <td>${book.dateReplaced ? new Date(book.dateReplaced).toLocaleDateString() : 'N/A'}</td>
+                                <td>${book.dateResolved ? new Date(book.dateResolved).toLocaleDateString() : 'N/A'}</td>
+                                <td>${book.returnPenalty}</td>
+                                <td>${book.transactionStatus}</td>
+                            </tr>
+            `).join('')
+            }else{
+                lostBooksTable.innerHTML=`
+                            <tr>
+                                <td colspan="10" style="text-align: center;"><h1>Empty Lost Books</h1></td>
+                            </tr>`
+            }
+
+
+        }
+        
+        function clearSearchLostBooksByStudentNumber(){
+            const studentNumber = document.getElementById('searchStudentNumberLost')
+            const lostBooksTable = document.getElementById('lostBooks')
+
+            studentNumber.value=``
+            lostBooksTable.innerHTML=``
+            message.innerHTML=``
+            fetchLostBooks()
+        }
+        
+        async function searchAccountByStudentNumber() {
+            const studentNumber = document.getElementById('searchStudentNumberAccount').value.trim()
+            const pendingStudentAccountTable = document.getElementById('accountRequest');
+            const verifiedStudentAccountTable = document.getElementById('verifiedStudentAccounts');
+
+            if(!studentNumber) return message.innerHTML='Please Enter Valid Student Number'
+            if(studentNumber.length < 5) return message.innerHTML=' Length of Student Number is Invalid'
+
+            const response = await fetch(`/searchStudentAccount/${studentNumber}`)
+            const account = await response.json()
+            
+            if(response.status === 404) return message.innerHTML=account.message
+            if(account[0].accountStatus === 'VERIFIED'){
+                message.innerHTML=``
+                pendingStudentAccountTable.innerHTML=``
+                verifiedStudentAccountTable.innerHTML=`
+                    <tr>
+                        <td>${account[0].studentNumber}</td>
+                        <td>${account[0].username}</td>
+                        <td>${new Date(account[0].dateTimeRegistered).toLocaleDateString()}</td>
+                        <td>
+                            <button class="action-btn forgotPassword-btn" onclick="showForgotPasswordForm('${account[0].username}')"> Forgot Password </button>
+                        </td>
+                    </tr>`
+            }else if(account[0].accountStatus === 'PENDING'){
+                message.innerHTML=``
+                verifiedStudentAccountTable.innerHTML=``
+                pendingStudentAccountTable.innerHTML=`
+                    <tr>
+                        <td>${account[0].studentNumber || 'N/A'}</td>
+                        <td>${account[0].username || 'N/A'}</td>
+                        <td>${new Date(account[0].dateTimeRegistered).toLocaleDateString() || 'N/A'}</td>
+                        <td>
+                            <button class="action-btn approve-btn" 
+                                onclick="handleAccountRequest('${account[0].id}', '${account[0].studentNumber}', 'VERIFIED')">
+                                Approve
+                            </button>
+                            <button class="action-btn reject-btn" 
+                                onclick="handleAccountRequest('${account[0].id}', '${account[0].studentNumber}', 'REJECTED')">
+                                Reject
+                            </button>
+                        </td>
+                    </tr>`
+            }
+        }
+
+        function clearSearchAccountByStudentNumber(){
+            const studentNumber = document.getElementById('searchStudentNumberAccount')
+            const pendingStudentAccountTable = document.getElementById('accountRequest')
+            const verifiedStudentAccountTable = document.getElementById('verifiedStudentAccounts')
+
+            studentNumber.value=``
+            pendingStudentAccountTable.innerHTML=``
+            verifiedStudentAccountTable.innerHTML=``
+            message.innerHTML=``
+            fetchAccountRequest()
+            fetchVerifiedAccounts()
+        }
+
+        async function searchBorrowRequestByStudentNumber() {
+            const borrowRequestTable=document.getElementById('borrowRequest')
+            const studentNumber = document.getElementById('searchStudentNumberBorrow').value.trim()
+
+            if(!studentNumber) return message.innerHTML='Please Enter Valid Student Number'
+            if(studentNumber.length < 5) return message.innerHTML=' Length of Student Number is Invalid'
+
+            const response = await fetch(`/searchStudentBorrowRequest/${studentNumber}`)
+            const books = await response.json()
+            
+            if(response.status === 404) return message.innerHTML=books.message, borrowRequestTable.innerHTML=``
+            if(books.length>0){
+                borrowRequestTable.innerHTML=``
+                borrowRequestTable.innerHTML=books.map(book=>`
+                        <tr>
+                            <td>${book.fullName}</td>
+                            <td>${book.studentNumber}</td>
+                            <td>${book.bookTitle}</td>
+                            <td>${book.bookNumber}</td>
+                            <td>${new Date(book.dateTimeBooked).toLocaleString()}</td>
+                            <td>
+                                <button class="action-btn reject-btn" onclick="handleBookRequest(${book.transactionID},'REJECTED')">Reject</button>
+                                <button class="action-btn approve-btn" onclick="handleBookRequest(${book.transactionID},'CLAIMED')">Approve</button>
+                            </td>
+                        </tr>
+                `).join('')
+            }else{
+                message.innerHTML=``
+                borrowRequestTable.innerHTML=`
+                        <tr>
+                            <td colspan="6" style="text-align: center;"><h2>Student have no book request</h2></td>
+                        </tr>`
+
+            }
+        }
+
+        function clearSearchBorrowRequestByStudentNumber(){
+            const borrowRequestTable=document.getElementById('borrowRequest')
+            const studentNumber = document.getElementById('searchStudentNumberBorrow')
+
+            borrowRequestTable.innerHTML=``
+            studentNumber.value=``
+            message.innerHTML=``
+            fetchBorrowRequest()
+        }
+
+        async function fetchToBuyBooks(){
+
+            const toBuyBooksTable = document.getElementById('toBuyBooks')
+            const response = await fetch('/toBuyBooks')
+            const books = await response.json()
+
+            if(books.length>0){
+                toBuyBooksTable.innerHTML=books.map(book=>`
+                            <tr>
+                                <td>${book.bookNumber}</td>
+                                <td>${book.bookTitle}</td>
+                                <td>${book.bookAuthor}</td>
+                                <td>${book.bookQuantity}</td>
+                                <td>
+                                    <button onclick="settleBook('${book.bookNumber}','${book.transactionID}','RESOLVED')">Book Bought</button>
+                                </td>
+                            </tr>
+                            `).join('')
+            }else{
+                toBuyBooksTable.innerHTML=`
+                        <tr>
+                            <td colspan="5" style="text-align:center;"><h2>No Books that need to be bought</h2></td>
+                        </tr>
+                        `
+            }
+        }
+
+        async function fetchToRepairBooks(){
+
+            const toRepairBooksTable = document.getElementById('toRepairBooks')
+            const response = await fetch('/toRepairBooks')
+            const books = await response.json()
+
+            if(books.length>0){
+                toRepairBooksTable.innerHTML=books.map(book=>`
+                        <tr>
+                            <td>${book.bookNumber}</td>
+                            <td>${book.bookTitle}</td>
+                            <td>${book.bookAuthor}</td>
+                            <td>${book.bookQuantity}</td>
+                            <td>
+                                <button onclick="settleBook('${book.bookNumber}','${book.transactionID}','RESOLVED')">Book Bought</button>
+                            </td>
+                        </tr>
+                        `).join('')
+            }else{
+                toRepairBooksTable.innerHTML=`
+                        <tr>
+                            <td colspan="5" style="text-align:center;"><h2>No Books that needs to be repair</h2></td>
+                        </tr>`
+
+            }
+        }
+        
+        async function settleBook(bookNumber,transactionID,transactionStatus){
+            const dateResolved = currentDate
+            if(confirm('Confirm Action!')){
+                const response = await fetch(`/settleBook`,{
+                    method:'PUT',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({bookNumber,transactionID,transactionStatus,dateResolved})
+
+                })
+                const data = await response.json()
+                alert(data.message)
+                fetchToBuyBooks()
+                fetchToRepairBooks()
+            }
+        }
+
+        async function searchOverdueBooksByStudentNumber() {
+            const overdueBooksTable = document.getElementById('overdueBooks')
+            const studentNumber = document.getElementById('searchStudentNumberOverdue').value.trim()
+
+            if(!studentNumber) return message.innerHTML='Please Enter Valid Student Number'
+            if(studentNumber.length < 5) return message.innerHTML=' Length of Student Number is Invalid'
+
+
+            const response = await fetch(`/searchOverdueBooksByStudentNumber/${studentNumber}`)
+            const books = await response.json()
+
+
+            
+            overdueBooksTable.innerHTML=``
+
+            if(response.status===404) return message.innerHTML=books.message
+            if(books.length>0){
+                message.innerHTML=``
+                overdueBooksTable.innerHTML=books.map(data=>`
+                
+                        <tr>
+                            <td>${data.lastName}, ${data.firstName} ${data.middleName}</td>
+                            <td>${data.studentNumber}</td>
+                            <td>${data.bookTitle}</td>
+                            <td>${data.bookNumber}</td>
+                            <td>${new Date(data.dateTimeClaimed).toLocaleString()}</td>
+                            <td>${new Date(data.dateToBeReturn).toLocaleDateString()}</td>
+                            <td>${data.phoneNumber}</td>
+                            <td>${data.emailAddress}</td>
+                            <td><button class="action-btn" onclick="showOverdueMessage('${data.transactionID}','${data.bookNumber}'); " style="background-color: var(--maroon); color: white;">Return</button></td>
+                        </tr>
+            `).join('')
+            }else{
+                message.innerHTML=``
+                overdueBooksTable.innerHTML=`
+                                    <tr>
+                                        <td colspan="9" style="text-align: center;"><h1>Student has no overdue books</h1></td>
+                                    </tr>`
+
+            }
+        }
+
+        function clearSearchOverdueBooksByStudentNumber(){
+            const overdueBooksTable = document.getElementById('overdueBooks')
+            const studentNumber = document.getElementById('searchStudentNumberOverdue')
+
+            message.innerHTML=``
+            overdueBooksTable.innerHTML=``
+            studentNumber.value=``
+            fetchOverdueBooks()
+        }
+
+        async function searchPenaltyBooksByStudentNumber(){
+            const studentNumber = document.getElementById('searchStudentNumberPenalty').value.trim()
+            const pendingPenaltyBooksTable = document.getElementById('pendingPenaltyBooks')
+
+
+            if(!studentNumber) return message.innerHTML='Please Enter Valid Student Number'
+            if(studentNumber.length < 5) return message.innerHTML=' Length of Student Number is Invalid'
+
+            const response = await fetch(`/searchPenalty/${studentNumber}`)
+            const data = await response.json()
+
+            message.innerHTML=``
+            pendingPenaltyBooksTable.innerHTML=``
+
+            if(response.status===404) return message.innerHTML=data.message
+            if(data.length>0){
+                pendingPenaltyBooksTable.innerHTML=data.map(book=>`
+                        <tr>
+                                <td>${book.fullName}</td>
+                                <td>${book.studentNumber}</td>
+                                <td>${book.bookTitle}</td>
+                                <td>${book.bookNumber}</td>
+                                <td>${new Date(book.dateReported).toLocaleDateString()}</td>
+                                <td>${book.returnCondition}</td>
+                                <td>${book.returnPenalty}</td>
+                                <td>${book.transactionStatus}</td>
+                                <td>
+                                    <button onclick="updateRemarks('${book.transactionID}','${book.transactionStatus}','${book.bookNumber}')" style="color:green; padding:12px;">
+                                        <i class="fas fa-check"></i> 
+                                    </button>
+                                </td>
+                        </tr>
+
+                `).join('')
+            }else{
+                message.innerHTML=``
+                pendingPenaltyBooksTable.innerHTML=`
+                                    <tr>
+                                        <td colspan="9" style="text-align: center;"><h1>Student has no Penalty Books!</h1></td>
+                                    </tr>`
+            }
+        }
+
+        function clearSearchPenaltyBooksByStudentNumber(){
+            const studentNumber = document.getElementById('searchStudentNumberPenalty')
+            const pendingPenaltyBooksTable = document.getElementById('pendingPenaltyBooks')
+
+            message.innerHTML=``
+            pendingPenaltyBooksTable.innerHTML=``
+            studentNumber.value=``
+            fetchPendingPenaltyBooks()
+        }
+
+        document.getElementById('studentButton').addEventListener('click',updateStudentDetails)
+        
+        document.getElementById('searchStudentNumber').addEventListener('keypress', (event)=>{
+            if(event.key == 'Enter'){
+                searchStudentByStudentNumber()
+            }
+        }) 
+
+        document.getElementById('searchStudentNumberDamage').addEventListener('keypress', (event)=>{
+            if(event.key == 'Enter'){
+                searchDamageBooksByStudentNumber()
+            }
+        }) 
+      
+        document.getElementById('searchStudentNumberLost').addEventListener('keypress', (event)=>{
+            if(event.key == 'Enter'){
+                searchLostBooksByStudentNumber()
+            }
+        }) 
+  
+        document.getElementById('searchStudentNumberBorrow').addEventListener('keypress', (event)=>{
+            if(event.key == 'Enter'){
+                searchBorrowRequestByStudentNumber()
+            }
+        }) 
+
+        document.getElementById('searchStudentNumberPenalty').addEventListener('keypress', (event)=>{
+            if(event.key == 'Enter'){
+                searchPenaltyBooksByStudentNumber()
+            }
+        })
+     
+        document.getElementById('searchStudentNumberAccount').addEventListener('keypress', (event)=>{
+            if(event.key == 'Enter'){
+                searchAccountByStudentNumber()
+            }
+        })
+     
+        document.getElementById('searchBookNumber').addEventListener('keypress', (event)=>{
+            if(event.key == 'Enter'){
+                searchBookByBookNumber()
+            }
+        })
+     
+        document.getElementById('searchStudentNumberReturn').addEventListener('keypress', (event)=>{
+            if(event.key == 'Enter'){
+                searchBorrowedBooksByStudentNumber()
+            }
+        }) 
+
+        document.getElementById('searchStudentNumberOverdue').addEventListener('keypress', (event)=>{
+            if(event.key == 'Enter'){
+                searchOverdueBooksByStudentNumber()
+            }
+        })
+
+
+
+        fetchToBuyBooks()
+        fetchToRepairBooks()
+        fetchLostBooks()
+        fetchDamageBooks()
+        fetchPendingPenaltyBooks()
+        fetchOverdueBooks()
+        updateBookTransactionStatus()
+        bookRequestExpiration()
+        fetchBooksTransactionHistory()
+        fetchMainDashBoard()
+        fetchBooks()
+        fetchStudents()
+        fetchReturnRequest()
+        fetchBorrowRequest()
+        fetchAccountRequest()
+        fetchVerifiedAccounts()
+    </script>
+</body>
+</html>

@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/files/icons/OIP-removebg-preview.png" sizes="128x128">
+    <title>Research References Books</title>
+    <link rel="stylesheet" href="../style/fictionBook.css">
+</head>
+<style>
+#confirmOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    #confirmModal {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      padding: 20px 30px;
+      width: 80%;
+      max-width: 600px;
+      max-height: 300px;
+      overflow-y: auto;
+      position: relative;
+      border: 2px solid maroon;
+    }
+
+    #confirmModal h1 {
+      color: #800000;
+      font-size: 20px;
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-family: 'f2';
+      letter-spacing: 1.1;
+    }
+
+    #confirmModal h2 {
+      color: #800000;
+      font-size: 16px;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      font-family: 'f2';
+    }
+
+    #confirmModal p {
+      color: #333;
+      font-size: 14px;
+      margin-bottom: 10px;
+      line-height: 1.4;
+      font-family: 'f5';
+    }
+
+    #confirmModal .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      color: #800000;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    #confirmModal .close-btn:hover {
+      color: #5c0000;
+    }
+
+    #confirmModal button {
+      background-color: #800000;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 10px;
+      font-family: 'f2';
+      transition: background-color 0.2s;
+    }
+
+    #confirmModal button:hover {
+      background-color: #5c0000;
+    }
+    
+.importantNoticeForm {
+    position: fixed;
+    top: 20%;     
+    right: 20%;   
+    background-color: white;  
+    padding: 15px;   
+    border-radius: 8px; 
+    z-index: 1000;  
+    display: none;
+    width: 20%;
+}
+
+
+#importantNoticeText {
+    color: #d32f2f;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+#importantNoticeText:hover {
+    background: rgba(211, 47, 47, 0.1);
+}
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+}
+
+.noticeForm {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    width: 350px;
+    text-align: center;
+}
+
+.popup-content h1 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.popup-content p {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+button {
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background: #cc0000;
+}
+.search{
+    position: fixed;
+    top:30%;
+    left: 60%;
+}
+  </style>
+<body>
+    <nav class="navbar">
+        <div class="icon-text">
+            <div class="square"></div>
+            <a href="/homepage"><span class="text">Library</span></a>
+        </div>
+        <div class="left-side">
+            <a href="/homepage">Home</a>
+            <a href="/about">About</a>
+            <div style="display: none;">
+                <p id="studentNumber"></p>
+                <p id="fullName"></p>
+            </div>
+        </div>
+        <div class="searchBar">
+            <input type="text" id="searchInput" placeholder="Search" autocomplete="off">
+        </div>
+        <div class="right-side">
+            <a href="/education">For Education</a>
+            <a href="/generalReading">For General Reading</a>
+            <a href="/researchReferences">For Research & References</a>
+            <a onclick="openImportantNoticeForm()" id="importantNoticeText" style="display: none;">Important Notice</a>
+
+            <div id="importantNoticeForm" class="importantNoticeForm" style="display: none;">
+                <button onclick="closeImportantNoticeForm()" style="position: absolute; top: 10px; right: 120px; color: maroon; border: none; border-radius: 4px; cursor: pointer;">X</button>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Book Title</th>
+                            <th>Date Time Claimed</th>
+                            <th>Return Date</th>
+                            <th>Transaction Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="overdueBooks"></tbody>
+                </table>
+            </div>
+            <span class="icon">
+                <a onclick="openProfileModal()"><img src="files/icons/user.png" alt="User Icon"/></a>
+            </span>
+            <div id="profileModal" class="modal" style="display: none;">
+            </div>
+        </div>
+    </nav>
+
+    <div id="noticeOverlay" class="overlay" onclick="closeNoticeForm()"></div>
+
+    <div id="noticeForm" class="noticeForm"></div>
+    
+    <a href="/homepage">
+        <img class="logo" src="/files/icons/OIP-removebg-preview.png"></a>
+    <div class="container">
+        <div class="header clearfix">
+            <div class="header-text">
+                <div class="ed">Fiction</div>
+                <div class="main-title">Fictional Worlds:<br>Ignite Imagination<br>Through Captivating Stories</div>
+            </div>
+            <div class="header-image">
+                <img src="/files/icons/Reading glasses-cuate.svg" alt="Educational Books">
+            </div>
+        </div>
+        <section id="page1" class="page-section">
+            <div id="fictionBooks" class="grid-container">
+            </div>
+        </section>
+        <div class="pagination">
+            <a href="#page1" data-page="1" class="page-number active">1</a>
+            <a href="#page2" data-page="2" class="page-number">2</a>
+            <a href="#page3" data-page="3" class="page-number">3</a>
+            <a href="#page4" data-page="4" class="page-number">4</a>
+            <a href="#page5" data-page="5" class="page-number">5</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const pageNumbers = document.querySelectorAll('.page-number');
+            const pageSections = document.querySelectorAll('.page-section');
+
+            pageNumbers.forEach(number => {
+                number.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    pageNumbers.forEach(num => num.classList.remove('active'));
+                    this.classList.add('active');
+                    pageSections.forEach(section => section.classList.add('hidden'));
+                    const pageId = this.getAttribute('href').substring(1);
+                    const selectedPage = document.getElementById(pageId);
+                    if (selectedPage) {
+                        selectedPage.classList.remove('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+    
+    </div>
+    <script>
+
+let now = new Date();
+    let year = now.getFullYear();
+    let month = String(now.getMonth() + 1).padStart(2, '0');
+    let day = String(now.getDate()).padStart(2, '0');
+    let hours = String(now.getHours()).padStart(2, '0');
+    let minutes = String(now.getMinutes()).padStart(2, '0');
+
+    const currentDateTime = `${year}-${month}-${day} ${hours}:${minutes}`;
+
+    async function setAccount() {
+        const username = localStorage.getItem('username');
+        const profileInfo = document.getElementById('profileModal')
+        const fullName = document.getElementById('fullName')
+        const studentNumber = document.getElementById('studentNumber')
+
+        const response= await fetch('/setAccount',{
+            method:'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:JSON.stringify({username})
+        })
+        const accountInfo = await response.json()
+        profileInfo.innerHTML=accountInfo.map(account=>`
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <h3>Profile</h3>
+                    <ul class="options-list">
+                        <li><a onclick="showPersonalDetails()">Personal Details</a></li>
+                        <li><a onclick="showHistory()">History</a></li>
+                        <li><a onclick="showChangePassword()">Change Password</a></li>
+                        <li><a onclick="logout()">Logout</a></li>
+                    </ul>
+                    <div id="details" class="option-content" style="display:none;">
+                        <p><strong>Account Status:</strong>${account.accountStatus}</p>
+                        <p><strong>Full Name:</strong>${account.fullName}</p>
+                        <p><strong>Student No:</strong> ${account.studentNumber}</p>
+                        <p><strong>Grade/ Yr Level:</strong> ${account.yearGradeLevel}</p>
+                        <p><strong>Coure/ Strand:</strong> ${account.courseStrand}</p> 
+                        <p><strong>Phone Number:</strong> ${account.phoneNumber}</p> 
+                        <p><strong>Email Address:</strong> ${account.emailAddress}</p>
+                    </div>
+                    <div id="history" class="option-content"style="display:none;">
+                        <table id="historyTable">
+                            <tr>
+                                <th>Book Title</th>
+                                <th>Date Booked</th>
+                                <th>Date Claimed</th>
+                                <th>Return Date</th>
+                                <th>Date Returned</th>
+                                <th>Condition</th>
+                                <th>Date Paid</th>
+                                <th>Date Replaced</th>
+                                <th>Date Repaired</th>
+                                <th>Penalty</th>
+                                <th>Status</th>
+                            </tr>
+                            <tbody id="bookHistory"></tbody>
+                        </table>
+                    </div>
+                    <div id="changePassword" class="option-content" style="display: none;">
+                        <input type="password"  id="currentPassword" placeholder="Enter Current Password">
+                        <input type="password"  id="newPassword" placeholder="Enter New Password">
+                        <input type="password"  id="confirmNewPassword" placeholder="Confirm New Password">
+                        <button onclick="changePassword('${username}')">Change Password</button>
+                    </div>
+                </div>`).join('')
+        fullName.innerHTML=accountInfo[0].fullName
+        studentNumber.innerHTML=accountInfo[0].studentNumber
+        fetchHistory()
+        setImportantNotice(accountInfo[0].studentNumber)
+    }
+    
+    async function changePassword(username) {
+        
+        const currentPassword = document.getElementById('currentPassword').value.trim()
+        const newPassword = document.getElementById('newPassword').value.trim()
+        const confirmNewPassword = document.getElementById('confirmNewPassword').value.trim()
+
+        if(!currentPassword || !newPassword || ! confirmNewPassword) return alert('Input Fields are required')
+        if(newPassword !== confirmNewPassword) return alert('Password doesnt match')
+        if(newPassword.length < 8 || confirmNewPassword.length <8) return alert('Password length is invalid')
+
+        const response = await fetch('/changePassword',{
+            method:'PUT',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({currentPassword,newPassword,username})
+        })
+
+        const data = await response.json()
+        if(response.status == 201) {
+            document.getElementById('currentPassword').value=''
+            document.getElementById('newPassword').value=''
+            document.getElementById('confirmNewPassword').value=''
+            window.location.href = '/homepage';
+        }
+        alert(data.message)
+    }
+    
+    function showChangePassword(){
+        hideAllOptions()
+        document.getElementById('changePassword').style.display = 'block';
+    }
+
+    function openProfileModal() {
+      document.getElementById('profileModal').style.display = 'block';
+      hideAllOptions()
+    }
+
+    function closeModal() {
+      document.getElementById('profileModal').style.display = 'none';
+    }
+
+    function hideAllOptions(){
+        document.getElementById('details').style.display = 'none';
+        document.getElementById('history').style.display = 'none';
+        document.getElementById('changePassword').style.display = 'none';
+    }
+   
+    function showPersonalDetails(){
+        hideAllOptions()
+        document.getElementById('details').style.display = 'block';
+    }
+    
+    function showHistory(){
+        fetchHistory()
+        hideAllOptions()
+        document.getElementById('history').style.display = 'block';
+    }
+
+    window.onclick = function(e) {
+      const modal = document.getElementById('profileModal');
+      if (e.target == modal) {
+        closeModal();
+      }
+    }
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = "/";
+        closeModal();
+    }
+    
+    async function fetchHistory() {
+        const studentNumber = document.getElementById('studentNumber').innerHTML;
+        const bookHistoryTable = document.getElementById('bookHistory');
+
+        const response = await fetch('/studentBookHistory', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ studentNumber })
+        });
+
+        const bookHistory = await response.json();
+        
+
+        if (bookHistory.length > 0) {
+            bookHistoryTable.innerHTML = bookHistory.map(history => `
+                <tr>
+                    <td>${history.bookTitle}</td>
+                    <td>${history.dateTimeBooked ? new Date(history.dateTimeBooked).toLocaleString() : 'N/A'}</td>
+                    <td>${history.dateTimeClaimed ? new Date(history.dateTimeClaimed).toLocaleString() : 'N/A'}</td>
+                    <td>${history.dateToBeReturn ? new Date(history.dateToBeReturn).toLocaleDateString(): 'N/A'}</td>
+                    <td>${history.dateTimeReturned ? new Date(history.dateTimeReturned).toLocaleString() : 'N/A'}</td>
+                    <td>${history.returnCondition || 'N/A'}</td>
+                    <td>${history.datePaid ? new Date(history.datePaid).toLocaleString() : 'N/A'}</td>
+                    <td>${history.dateReplaced ? new Date(history.dateReplaced).toLocaleString() : 'N/A'}</td>
+                    <td>${history.dateRepaired ? new Date(history.dateRepaired).toLocaleString() : 'N/A'}</td>
+                    <td>${history.returnPenalty|| 'N/A'}</td>
+                    <td>${history.transactionStatus}</td>
+                </tr>`).join('');
+        } else {
+            bookHistoryTable.innerHTML =`
+            <tr>
+                <td colspan="11" style="text-align: center;"><h2>No History</h2></td>
+            </tr>`
+        }
+    }
+
+    async function setImportantNotice(studentNumber) {
+        
+        const overdueBookTable = document.getElementById('overdueBooks')
+        const importantNoticeText = document.getElementById('importantNoticeText')
+        const noticeForm = document.getElementById('noticeForm')
+
+        const response = await fetch('/importantNotice',{
+            method:'POST',
+            headers:{'Content-Type':'Application/JSON'},
+            body:JSON.stringify({studentNumber})
+        })
+        const books = await response.json()
+        if(books.length>0) {
+            noticeForm.style.display = 'flex';
+            noticeForm.innerHTML=books.map(book=>`
+                <div class="popup-content">
+                    <h1>Overdue Book Needs to be Returned</h1>
+                    <p>${book.bookTitle} Needs to be Returned.</p>
+                    <p>Note that the return date was ${new Date(book.dateToBeReturn).toLocaleDateString()}</p>
+                    <p>Thank you, see you later!</p>
+                    <button onclick="closeNoticeForm()">Close</button>
+                </div>`).join('')
+            
+            overdueBookTable.innerHTML=books.map(book=>`
+                            <tr>
+                                <td>${book.bookTitle}</td>
+                                <td>${new Date(book.dateTimeClaimed).toLocaleString()}</td>
+                                <td>${new Date(book.dateToBeReturn).toLocaleDateString()}</td>
+                                <td>${book.transactionStatus}</td>
+                            </tr>
+            `).join('')
+            importantNoticeText.style.color='red'
+            document.body.appendChild(noticeForm)
+        }else{
+            importantNoticeText.style.display='none'
+        }
+    }
+    
+    function openImportantNoticeForm(){
+        document.getElementById('importantNoticeForm').style.display='block'
+    }
+    
+    function closeImportantNoticeForm(){
+        document.getElementById('importantNoticeForm').style.display='none'
+    }
+    
+    function closeNoticeForm() {
+        document.getElementById('noticeOverlay').style.display = 'none';
+        document.getElementById('noticeForm').style.display = 'none';
+    }
+
+    async function borrowBook(bookNumber,bookTitle) {
+
+        if(confirm('Confirm Booking')){
+        const dateTimeBooked = currentDateTime
+        const studentNumber = document.getElementById('studentNumber').innerHTML
+           
+        const response = await fetch('/requestBook',{
+            method:'POST',
+            headers:{'Content-Type':'Application/json'},
+            body:JSON.stringify({bookNumber,studentNumber,dateTimeBooked,})
+        })
+        const data = await response.json()
+        if(response.status === 201){
+            fetchFictionBooks()
+            showBookedSuccessConfirmation(bookTitle)   
+            fetchHistory()
+        }
+        alert(data.message) 
+        }   
+    }
+
+    function showBookedSuccessConfirmation(bookTitle) {
+        const modalOverlay = document.createElement("div")
+        modalOverlay.id = "confirmOverlay"
+        
+        const confirmDiv = document.createElement("div")
+        confirmDiv.id = "confirmModal"
+        
+        confirmDiv.innerHTML = `
+                <h1>${bookTitle} Booked Successfully!</h1>
+                <p>Please claim the book at The DCSA Valenzuela Library. Note that this booking will expire after 24 hrs if not claimed in the Library!</p>
+                <h2>Agreement</h2>
+                <p>The book is owned by DCSA Valenzuela. In case of loss or damage, the student is responsible for it, Please refer to the DCSA Valenzuela Library Penalty, Terms and Conditions.</p>
+                <p>This book needs to be return 3  Days after claimed at the Library, in case of non working days, please consider the next day for book return.</p>
+                <button onclick="closeConfirmation()">Confirm</button>`
+        
+        modalOverlay.appendChild(confirmDiv);
+        document.body.appendChild(modalOverlay);
+        document.body.style.overflow = "hidden";
+    }
+    
+    function closeConfirmation() {
+      document.getElementById("confirmOverlay").remove();
+      document.body.style.overflow = "auto";
+    }
+    
+    async function  fetchFictionBooks(){
+        const bookContainer = document.getElementById('fictionBooks')
+            try {
+                const response = await fetch('/fictionBooks')
+                const books = await response.json()
+            
+                bookContainer.innerHTML=books.map(book=>`
+                <div class="grid-item">
+                    
+                    <img src="../../imageUploads/${book.frontCover}" class="book-cover">
+                    <div class="item-details">
+                        <p id="book-title" class="item-title">${book.bookTitle}</p>
+                        <p id="book-author" class="item-author">${book.bookAuthor}</p>
+                        <p id="book-description" class="item-description">${book.bookDescription}</p>
+                        <p id="book-quantity" class="item-quantity">Available copies: ${book.bookStocks}</p>
+                        <button ${book.bookStocks >= 1 ? '':'disabled'} onclick="borrowBook('${book.bookNumber}','${book.bookTitle}')">Borrow</button>
+                    </div>
+                </div>
+                `).join('')        
+        } catch (error) {
+            console.error(error)
+        }
+    }
+    
+    async function searchBook() {
+        const keyword = document.getElementById('searchInput').value;
+        const encoded = encodeURIComponent(keyword.trim());
+
+        if (encoded.length == 0) return;
+        const bookContainer = document.getElementById('fictionBooks')
+
+        const response = await fetch(`/fiction/searchBook?q=${encoded}`)
+        const data= await response.json()
+        
+        if(data.length>0){
+            bookContainer.innerHTML=data.map(book=>`
+                <div class="grid-item">
+                    
+                    <img src="../../imageUploads/${book.frontCover}" class="book-cover">
+                    <div class="item-details">
+                        <p id="book-title" class="item-title">${book.bookTitle}</p>
+                        <p id="book-author" class="item-author">${book.bookAuthor}</p>
+                        <p id="book-description" class="item-description">${book.bookDescription}</p>
+                        <p id="book-quantity" class="item-quantity">Available copies: ${book.bookStocks}</p>
+                        <button ${book.bookStocks >= 1 ? '':'disabled'} onclick="borrowBook('${book.bookNumber}','${book.bookTitle}')">Borrow</button>
+                    </div>
+                </div>
+                `).join('')        
+        }else{
+            bookContainer.innerHTML = `<p style="padding: 10px; font-family: sans-serif;">No results found.</p>`;
+        }
+    }
+    
+    document.getElementById('searchInput').addEventListener('keypress',function(event){
+        searchBook()
+        if(event.key =='Enter') searchBook()
+        if(this.value.trim() === ''){
+            fetchFictionBooks()
+        } 
+    })
+
+    document.getElementById('searchInput').addEventListener('input',function(event){
+        if(this.value.trim() === ''){
+            fetchFictionBooks()
+        } 
+    })
+    
+
+    fetchFictionBooks()
+    window.addEventListener('DOMContentLoaded', setAccount)
+</script>
+</body>
+</html>
