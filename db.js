@@ -1,12 +1,15 @@
 import mysql from 'mysql2';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const pool= mysql.createPool({
-    host: 'localhost',  
-    user: 'root',       
-    password: '',
-    database: 'DCSA_Valenzuela_Library_DB',
-    port: 3307
+const pool = mysql.createPool({
+  host: process.env.MYSQL_HOST,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
+  port: Number(process.env.MYSQL_PORT) || 3306
 }).promise();
+
 
 const verified = 'VERIFIED'
 const pending  = 'PENDING'
